@@ -1,0 +1,9 @@
+/client/node_modules
+/vendor/
+.DS_Store
+/.php_cs.cache
+/resources/
+/_resources/
+/public/
+/assets/
+/tests/__output/

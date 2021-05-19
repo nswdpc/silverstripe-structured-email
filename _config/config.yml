@@ -1,0 +1,5 @@
+---
+Name: nswdpc-structured-email
+---
+NSWDPC\StructuredEmail\StructuredEmail:
+  is_structured: true
