@@ -1,21 +1,59 @@
 ## Structured email handling for Silverstripe
 
-The goal of this module is to provide a structured method to template and send, simple and easy-to-digest emails from Silverstripe websites.
+The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)). The templates used are based on the [Postmark Transactional Email Templates](https://github.com/wildbit/postmark-templates).
+
+This module is under active development, pull requests and feedback are welcome.
+
+The `StructuredEmail` class injects itself over `SilverStripe\Control\Email\Email` and extends that class, it will attempt to add the body of your email into the standard template shipped with this module.
+
+For specific core emails, it will detect the purpose of the email based on the template name:
+
++ `SilverStripe/Control/Email/ForgotPasswordEmail` - the forgot password email
++ `SilverStripe/Control/Email/ChangePasswordEmail` - the changed password email
++ `SilverStripe/MFA/Email/*` - MFA emails
++ `SilverStripe/ContentReview/*` - Content review emails
++ `SubmittedFormEmail` - user defined form generic email
++ `SubmittedFormEmailPlain` - user defined form generic email (plain text)
+
+If the class encounters a complete HTML document in the email, it will use HTML contained within the `<body>` tag as the email content.
 
 ## Resources
 
-+ https://www.caniemail.com/features/css-variables/
-+ https://github.com/wildbit/postmark-templates
++ E-mail support across clients: https://www.caniemail.com
++ Postmark templates: https://github.com/wildbit/postmark-templates
 
-### Usage
+## Quick example
 
+For finer grain control, use `StructuredEmail` directly.
 
+See [further documentation](./docs/en/001_index.md)
+```php
+<?php
+// Your custom HTML body
+$html = ArrayData::create([
+    'Name' => $name,
+    'CallToAction' => $link
+])->renderWith('My/Template');
+
+$data = [
+    'Body' => $html// Your email HTML
+];
+
+$email = StructuredEmail::create();
+$email->setTo(["to@example.com", "To name"]);
+$email->setFrom(["from@example.com" => "From name"]);
+$email->setData($data);
+// will automatically pick up StructuredEmail.ss as the template
+$email->send();
+```
+
+Emails are decorated using a standard, basic colour palette from the NSW Design System. [You can provide your own decorator](./docs/en/003_decorator.md).
 
 ## Installation
 
 The only supported way of installing this module is via [composer](https://getcomposer.org/download/)
 
-```
+```shell
 composer require nswdpc/silverstripe-structured-email
 ```
 
@@ -23,21 +61,12 @@ composer require nswdpc/silverstripe-structured-email
 
 [BSD-3-Clause](./LICENSE.md)
 
-## Documentation
-
-* [Documentation](./docs/en/001_index.md)
-
-> Further English language documentation should be included in the file above or linked to from that file
-
-## Configuration
-
-> Add project configuration examples
 
 ## Maintainers
 
 + [dpcdigital@NSWDPC:~$](https://dpc.nsw.gov.au)
 
-> Add additional maintainers here and/or include [authors in composer](https://getcomposer.org/doc/04-schema.md#authors)
+The source of the HTML email templates is the [Postmark templates project](https://github.com/wildbit/postmark-templates)
 
 ## Bugtracker
 

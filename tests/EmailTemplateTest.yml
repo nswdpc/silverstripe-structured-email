@@ -1,0 +1,35 @@
+'SilverStripe\Security\Permission':
+  admin:
+    Code: ADMIN
+  security-admin:
+    Code: CMS_ACCESS_SecurityAdmin
+'SilverStripe\Security\Group':
+  admingroup:
+    Title: Admin
+    Code: admin
+    Permissions: '=>SilverStripe\Security\Permission.admin'
+  securityadminsgroup:
+    Title: securityadminsgroup
+    Code: securityadminsgroup
+    Permissions: '=>SilverStripe\Security\Permission.security-admin'
+  contentgroup:
+    Title: contentgroup
+    Code: contentgroup
+'SilverStripe\Security\Member':
+  admin:
+    FirstName: Jonny
+    Surname: Admin
+    Email: jonny@example.com
+    Groups: '=>SilverStripe\Security\Group.admingroup'
+  other-admin:
+    FirstName: Someone
+    Surname: Else
+    Email: someone@example.com
+    Groups: '=>SilverStripe\Security\Group.admingroup'
+  forgotpassword:
+    FirstName: Forgotful
+    Surname: Person
+    Email: forgetful@example.com
+    Password: plaintextpassword
+    PasswordExpiry: 2099-12-31
+    Groups: '=>SilverStripe\Security\Group.contentgroup'

@@ -1,6 +1,7 @@
-<% with $Top.EmailDecorator %>
 <style type="text/css" rel="stylesheet" media="all">
     /* Base ------------------------------ */
+
+    $Me
 
     body {
         width: 100% !important;
@@ -8,8 +9,6 @@
         margin: 0;
         -webkit-text-size-adjust: none;
     }
-
-    $Me
 
     <% include NSWDPC/StructuredEmail/Styles_text %>
 
@@ -154,11 +153,3 @@
         supported-color-schemes: light dark;
     }
 </style>
-<!--[if mso]>
-<style type="text/css">
-    .f-fallback  {
-        font-family: {$FontFamily};
-    }
-</style>
-<![endif]-->
-<% end_with %>

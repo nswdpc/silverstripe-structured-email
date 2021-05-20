@@ -22,7 +22,7 @@ class Decorator extends AbstractDecorator {
      * @var array
      */
     private static $decorations = [
-        'FontFamily' => "monospace",
+        'FontFamily' => "-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif",
         'FontSize' => '16px',
         'BodyBackgroundColor' => '#F2F4F6',
         'BackgroundColor' => '#ffffff',
@@ -34,6 +34,11 @@ class Decorator extends AbstractDecorator {
         'HighlightColor' => '#d7153a',
         'SecondaryColor' => '#2e5299'
     ];
+
+    /**
+     * @var array
+     */
+    private static $font_sources = [];
 
 
 }

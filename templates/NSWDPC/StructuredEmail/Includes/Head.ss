@@ -4,5 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="color-scheme" content="light dark" />
     <meta name="supported-color-schemes" content="light dark" />
+    <meta name="x-structured-email" content="1" />
     <title>{$Top.EmailTitle.XML}</title>
     <% include NSWDPC/StructuredEmail/Style %>

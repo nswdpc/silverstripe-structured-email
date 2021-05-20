@@ -35,7 +35,7 @@ p.sub {
 body,
 td,
 th {
-    font-family: $FontFamily;
+    font-family: {$FontFamily.RAW};
 }
 
 h1 {

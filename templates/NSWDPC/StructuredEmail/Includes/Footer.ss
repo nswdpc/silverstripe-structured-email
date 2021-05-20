@@ -1,10 +1,14 @@
 
-                                            </div>
+                                            </div><%-- f-fallback --%>
 
-                                        </td>
+                                        </td><%-- content-cell --%>
+
                                     </tr>
-                                </table>
-                            </td>
+
+                                </table><%-- email-body_inner --%>
+
+                            </td><%-- email-body --%>
+
                         </tr>
 
                         <%-- FOOTER row --%>
@@ -17,7 +21,7 @@
 
                         </tr>
 
-                    </table>
+                    </table><%-- email-content --%>
 
                 </td>
 
