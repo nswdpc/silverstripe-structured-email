@@ -27,6 +27,27 @@ class StructuredEmail extends Email {
     private static $is_structured = true;
 
     /**
+     * Process HTML with DOMDocument
+     */
+    const HTML_CLEANER_DOMDOCUMENT = 'DOMDocument';
+    /**
+     * Process HTML with strip_tags
+     */
+    const HTML_CLEANER_STRIPTAGS = 'strip_tags';
+    /**
+     * Process HTML with tidy
+     */
+    const HTML_CLEANER_TIDY = 'tidy';
+
+    /**
+     * Used to retrieve the contents of a <body> from provided templates
+     * The default HTML document cleaner is tidy
+     * if not found or installed, strip_tags will be used
+     * @var string
+     */
+    private static $html_cleaner = self::HTML_CLEANER_TIDY;
+
+    /**
      * @var NSWDPC\StructuredEmail\AbstractDecorator
      **/
     private $decorator = null;
@@ -76,17 +97,19 @@ class StructuredEmail extends Email {
     /**
      * Rendered the data provided into a into the structured email template
      */
-    protected function renderIntoStructured(string $template) {
+    protected function renderIntoStructuredEmail(string $template) {
 
         // check if a body is set, if so use that
         $body = $this->getBody();
+
         if(!$body) {
             // email called with data and a template
             // render data into that template
             $body = ViewableData::create()->renderWith($template, $this->getData());
         }
 
-        // TODO check if $body is a complete HTML document and strip chrome out
+        // clean the HTML, removing everything that cannot go in a body tag
+        $body = $this->cleanHTMLDocument($body);
 
         // clear all data on this email
         $this->setData([]);
@@ -108,6 +131,92 @@ class StructuredEmail extends Email {
     }
 
     /**
+     * Use the configured html_cleaner to get the body contents of the provided HTML
+     */
+    private function cleanHTMLDocument(string $html) : string {
+
+        try {
+
+            // it's possible the HTML is entitised, or partially so
+            $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+            // clear out all newlines to avoid nl2br fun
+            $html = str_replace(["\n","\r"], "", $html);
+
+            // Sneaky check if no <body occurs in the document - bail if so
+            if(strpos($html, "<body") === false) {
+                return $html;
+            }
+
+            $cleaner = $this->config()->get('html_cleaner');
+
+            if($cleaner == self::HTML_CLEANER_DOMDOCUMENT) {
+
+                if(class_exists('DOMDocument')) {
+                    // Use DOMDocument to strip out everything but the contents of <body>
+                    libxml_use_internal_errors(true);
+                    $dom = new \DOMDocument();
+                    $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD);
+                    /* @var \DOMNode */
+                    $body = $dom->getElementsByTagName('body')->item(0);
+                    if(!$body instanceof \DOMNode) {
+                        throw new \Exception("Failed to find body in document");
+                    }
+                    // create an element to hold body child nodes
+                    $element = $dom->createElement('div');
+                    foreach($body->childNodes as $node) {
+                        if($node instanceof \DOMElement) {
+                            $element->appendChild($node);
+                        }
+                    }
+                    $result = $dom->saveHTML($element);
+                    $result .= "<!-- dd -->";
+                    libxml_clear_errors();
+                    return $result;
+                }
+
+            } else if($cleaner == self::HTML_CLEANER_TIDY) {
+
+                if(class_exists('tidy')) {
+                    // Use tidy to strip out everything but the contents of <body>
+                    $tidy = new \tidy();
+                    $html = $tidy->repairString($html,
+                        [
+                            'indent' =>  true,
+                            'indent-spaces' => 4,
+                            'output-html' => true,
+                            'merge-divs' => false,
+                            'merge-spans' => false,
+                            'tab-size' => 4,
+                            'show-body-only' => true,
+                            'output-encoding' => 'utf-8',
+                            'input-encoding'=> 'utf-8',
+                            'output-bom' => false
+                        ],
+                        'utf8'
+                    );
+                    $html .= "<!-- tidy -->";
+                    return $html;
+                }
+
+            }
+        } catch (\Exception $e) {
+            // NOOP on error - but failover to the default
+        }
+
+        $html = strip_tags(
+            $html,
+            '<div><p><pre><blockquote><img>'
+            . '<br>'
+            . '<h1><h2><h3><h4><h5><h6>'
+            . '<ul><li><ol><dl><dt><dd>'
+            . '<strong><em><a><span><i><b><code><cite>'
+            . '<table><th><td><tr><caption><thead><tbody><tfoot>'
+        );
+        $html .= "<!-- st -->";
+        return $html;
+    }
+
+    /**
      * @inheritdoc
      * Override sending handling to render email into structured email template
      */
@@ -123,7 +232,7 @@ class StructuredEmail extends Email {
         // if using the structured email template, don't re-render
         if($template != $this->email_template) {
             // render into the structured email template
-            $this->renderIntoStructured($template);
+            $this->renderIntoStructuredEmail($template);
         }
 
         // render document
@@ -144,7 +253,7 @@ class StructuredEmail extends Email {
         }
 
         // render the email into the structured email template
-        $this->renderIntoStructured();
+        $this->renderIntoStructuredEmail();
 
         // only render the plain part
         $this->render(true);
@@ -227,28 +336,10 @@ class StructuredEmail extends Email {
 
         // handle specific common template sections
         $htmlTemplate = str_replace('\\', '/', $htmlTemplate);
-        $preHeader = $this->getPreheader();
-        if(!$preHeader) {
-            switch($htmlTemplate) {
-                case 'SilverStripe/Control/Email/ForgotPasswordEmail':
-                    $this->setPreheader(
-                        _t(
-                            'StructuredEmail.FORGOT_PASSWORD_PREHEADER',
-                            'Your password reset link'
-                        )
-                    );
-                    break;
-                case 'SilverStripe/Control/Email/ChangePasswordEmail':
-                    $this->setPreheader(
-                        _t(
-                            'StructuredEmail.CHANGED_PASSWORD_PREHEADER',
-                            'Your password was changed'
-                        )
-                    );
-                    break;
-            }
-        }
+        // apply preheader if not set, based on template name
+        $this->applyPreheader($htmlTemplate);
 
+        // handle adding HTML part
         if(!$plainOnly) {
             // Build HTML / Plain components
             $this->setBody($htmlPart);
@@ -256,6 +347,7 @@ class StructuredEmail extends Email {
             $this->getSwiftMessage()->setCharset('utf-8');
         }
 
+        // convert the html to plain text (markdown)
         try {
             // create the converter
             $converter = new HtmlConverter([
@@ -278,12 +370,42 @@ class StructuredEmail extends Email {
     }
 
     /**
+     * Apply pre header based on template name
+     * We attempt to set a pre header if not already set for common templates
+     * @return void
+     */
+    protected function applyPreheader(string $template) {
+        $preHeader = $this->getPreheader();
+        if(!$preHeader) {
+            switch($template) {
+                case 'SilverStripe/Control/Email/ForgotPasswordEmail':
+                    $this->setPreHeader(
+                        _t(
+                            'StructuredEmail.FORGOT_PASSWORD_PREHEADER',
+                            'Your password reset link'
+                        )
+                    );
+                    break;
+                case 'SilverStripe/Control/Email/ChangePasswordEmail':
+                    $this->setPreHeader(
+                        _t(
+                            'StructuredEmail.CHANGED_PASSWORD_PREHEADER',
+                            'Your password was changed'
+                        )
+                    );
+                    break;
+            }
+        }
+    }
+
+    /**
      * Set the preheader for this specific email
      * @see https://postmarkapp.com/support/article/1220-adding-preheader-text-to-your-messages
      * @param string
      */
-    public function setPreHeader(string $value) {
+    public function setPreHeader(string $value) : self {
         $this->pre_header = $value;
+        return $this;
     }
 
     /**
