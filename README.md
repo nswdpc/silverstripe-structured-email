@@ -2,18 +2,23 @@
 
 The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)). The templates used are based on the [Postmark Transactional Email Templates](https://github.com/wildbit/postmark-templates).
 
-This module is under active development, pull requests and feedback are welcome.
+> This module is under active development, pull requests and feedback are welcome.
 
-The `StructuredEmail` class injects itself over `SilverStripe\Control\Email\Email` and extends that class, it will attempt to add the body of your email into the standard template shipped with this module.
+The `StructuredEmail` extends the `Email` class. You can use it standalone or you may wish to inject StructuredEmail as the Email class for your project using `Injector`.
 
-For specific core emails, it will detect the purpose of the email based on the template name:
+For specific core emails, it will attempt to detect the purpose of the email based on the template name:
 
 + `SilverStripe/Control/Email/ForgotPasswordEmail` - the forgot password email
 + `SilverStripe/Control/Email/ChangePasswordEmail` - the changed password email
+
+TODO:
+
 + `SilverStripe/MFA/Email/*` - MFA emails
 + `SilverStripe/ContentReview/*` - Content review emails
 + `SubmittedFormEmail` - user defined form generic email
 + `SubmittedFormEmailPlain` - user defined form generic email (plain text)
+
+### Existing templates
 
 If the class encounters a complete HTML document in the email, it will use HTML contained within the `<body>` tag as the email content.
 

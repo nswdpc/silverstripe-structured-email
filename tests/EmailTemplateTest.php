@@ -26,16 +26,19 @@ class EmailTemplateTest extends SapphireTest {
     public function testTemplate() {
 
         $data = [
-            'Body' => file_get_contents(dirname(__FILE__) . '/data/template.html'),
-            'Preheader' => 'Test generic email that needs your attention'
+            'Body' => file_get_contents(dirname(__FILE__) . '/data/template.html')
         ];
 
         $email = StructuredEmail::create();
         $email->setTo("to@example.com");
         $email->setCc("cc@example.com");
         $email->setBcc("bcc@example.com");
-        $email->setFrom("from@example.com");
+        $email->setFrom(["from@example.com" => "Jiminy Crickets", "another@example.com" => "Bob Pokemon"]);
+        $email->addFrom("secondary@example.com");
+        $email->setSubject('Welcome to the show');
+        $email->setPreheader('Test generic email that needs your attention');
         $email->setData($data);
+        $email->setViewAction('Confirm your identify', 'https://confirm.example.com?token=suitably-long-token');
         $email->Send();
 
         $html = $email->getBody();

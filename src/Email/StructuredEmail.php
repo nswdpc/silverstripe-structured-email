@@ -13,6 +13,9 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\ViewableData;
 use SilverStripe\View\Requirements;
+use Spatie\SchemaOrg\Schema;
+use Spatie\SchemaOrg\Action;
+use Spatie\SchemaOrg\Contracts\ActionContract;
 
 /**
  * Convert standard email template requests to structured email
@@ -61,6 +64,11 @@ class StructuredEmail extends Email {
      * @var string
      */
     protected $pre_header = '';
+
+    /**
+     * @var Action|null
+     */
+    protected $email_message_action = null;
 
     /**
      * @inheritdoc
@@ -418,5 +426,61 @@ class StructuredEmail extends Email {
         } else {
             return '';
         }
+    }
+
+    /**
+     * In your email template, use $Schema.RAW within a script ld+json tag
+     * Return the Schema.org script for this message
+     */
+    public function getSchema() : string {
+
+        // create base schema
+        $emailMessage = Schema::emailMessage();
+
+        // about
+        if($subject = $this->getSubject() ) {
+            $emailMessage->about( Schema::thing()->name( $subject ) );
+        }
+
+        // abstract
+        if($abstract = $this->getPreheader()) {
+            $emailMessage->abstract( $abstract );
+        }
+
+        // add potentialAction on
+        if($action = $this->getAction()) {
+            $emailMessage->action( $action );
+        }
+
+        return $emailMessage->toScript();
+
+    }
+
+    /**
+     * @return ActionContract|null
+     * The action must implement {@link https://github.com/spatie/schema-org/blob/master/src/Contracts/ActionContract.php}
+     */
+    public function getAction() {
+        return $this->email_message_action;
+    }
+
+    /**
+     * Set a potentialAction from schema.org actions
+     * @see https://schema.org/potentialAction
+     */
+    public function setAction(ActionContract $action) {
+        $this->email_message_action = $action;
+        return $this;
+    }
+
+    /**
+     * A common type of action is a ViewAction
+     */
+    public function setViewAction($name, $url) : self {
+        $action = Schema::viewAction()
+            ->name($name)
+            ->url($url);
+        $this->email_message_action = $action;
+        return $this;
     }
 }

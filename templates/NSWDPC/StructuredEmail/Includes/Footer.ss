@@ -28,6 +28,8 @@
             </tr>
 
         </table>
+
+        <% include NSWDPC/StructuredEmail/Schema %>
     </body>
 
 </html>

@@ -17,8 +17,8 @@ We add:
 
 ### Planned features
 
-+ Schema.org support
-+ ⚠️ 🧫 Automated text/plain content creation
++ ⚠️ 🧫 Schema.org support
++ ⚠️ 🧫 Automated text/plain content creation (as markdown)
 
 ### Stretch goals
 
