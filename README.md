@@ -2,7 +2,7 @@
 
 The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)). The templates used are based on the [Postmark Transactional Email Templates](https://github.com/wildbit/postmark-templates).
 
-> This module is under active development, pull requests and feedback are welcome.
+> :warning: This module is under active development and shouldn't be used in production just yet as there are probably bugs. Test results, pull requests and feedback are welcome.
 
 The `StructuredEmail` extends the `Email` class. You can use it standalone or you may wish to inject StructuredEmail as the Email class for your project using `Injector`.
 
