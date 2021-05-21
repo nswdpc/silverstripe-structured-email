@@ -101,4 +101,23 @@ class EmailTemplateTest extends SapphireTest {
         $this->saveOutput($message, "ChangePasswordEmail", ".txt");
     }
 
+    public function testStandardEmail() {
+        $member = $this->objFromFixture(Member::class, 'forgotpassword');
+        $email = StructuredEmail::create()
+            ->setHTMLTemplate('SilverStripe\\Control\\Email\\Email')
+            ->setData([
+                'EmailContent' => file_get_contents(dirname(__FILE__) . '/data/template.html')
+            ])
+            ->setPreHeader('An important message')
+            ->setTo($member->Email)
+            ->setFrom('from@example.com')
+            ->setSubject('Subject of an important message');
+        $email->send();
+
+        $this->saveOutput($email->getBody(), "StandardEmail");
+
+        $message = $email->getSwiftMessage();
+        $this->saveOutput($message, "StandardEmail", ".txt");
+    }
+
 }
