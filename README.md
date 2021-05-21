@@ -22,6 +22,10 @@ TODO:
 
 If the class encounters a complete HTML document in the email, it will use HTML contained within the `<body>` tag as the email content.
 
+## Schema.org
+
+[Reference](./docs/en/004_schemaorg.md)
+
 ## Resources
 
 + E-mail support across clients: https://www.caniemail.com
