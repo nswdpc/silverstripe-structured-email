@@ -107,6 +107,8 @@ class StructuredEmail extends Email {
      */
     protected function renderIntoStructuredEmail(string $template) {
 
+        Requirements::clear();
+
         // check if a body is set, if so use that
         $body = $this->getBody();
 
@@ -134,6 +136,8 @@ class StructuredEmail extends Email {
 
         // ensure the email uses the
         $this->setHTMLTemplate($this->email_template);
+
+        Requirements::restore();
 
         return $this;
     }
