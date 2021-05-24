@@ -36,6 +36,16 @@
 
                                 <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
 
+                                    <% with $Top.EmailDecorator %>
+                                        <% if $ContentLogo %>
+                                        <tr>
+                                            <td class="email-body_inner" align="center">
+                                                <img class="email-body_logo" src="{$ContentLogo}" border="0">
+                                            </td>
+                                        </tr>
+                                        <% end_if %>
+                                    <% end_with %>
+
                                     <%-- Body content --%>
                                     <tr>
 

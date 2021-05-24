@@ -33,6 +33,30 @@ abstract class AbstractDecorator extends ViewableData {
     protected $layout_type = self::LAYOUT_TYPE_BASIC;
 
     /**
+     * @var string
+     * Masthead text, will have HTML removed
+     */
+    private static $masthead = '';
+
+    /**
+     * @var string
+     * URL to masthead logo, can be used with/without a Content logo
+     */
+    private static $masthead_logo = '';
+
+    /**
+     * @var string
+     * URL to content logo, can be used with/without a Masthead logo
+     */
+    private static $content_logo = '';
+
+    /**
+     * @var string
+     * HTML physical address of sender
+     */
+    private static $physical_address = '';
+
+    /**
      * @inheritdoc
      */
     public function getField($field)
@@ -167,6 +191,19 @@ CSS;
      */
     public function getMastheadLogo() {
         $value = $this->config()->get('masthead_logo');
+        if($value) {
+            return $value;
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Return the content logo URL
+     * @return string
+     */
+    public function getContentLogo() {
+        $value = $this->config()->get('content_logo');
         if($value) {
             return $value;
         } else {
