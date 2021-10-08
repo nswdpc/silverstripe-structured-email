@@ -19,7 +19,8 @@
     "require": {
         "silverstripe/framework": "^4",
         "league/html-to-markdown": "^5",
-        "spatie/schema-org": "^3.4"
+        "spatie/schema-org": "^3.4",
+        "nswdpc/silverstripe-taggable-notifications": "dev-master"
     },
     "suggest": {
         "ext-xml": "Use DOMDocument to process HTML documents",

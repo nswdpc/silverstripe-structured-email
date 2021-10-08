@@ -4,6 +4,7 @@ namespace NSWDPC\StructuredEmail;
 
 use League\HTMLToMarkdown\HtmlConverter;
 use League\HTMLToMarkdown\Converter\TableConverter;
+use NSWDPC\Messaging\Taggable\TaggableEmail;
 use SilverStripe\Control\Email\Email;
 use SilverStripe\Control\Email\Mailer;
 use SilverStripe\Control\HTTP;
@@ -31,7 +32,7 @@ use Spatie\SchemaOrg\Contracts\ActionContract;
  * @author James
  *
  */
-class StructuredEmail extends Email implements EmailWithCustomParameters {
+class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters {
 
     /**
      * Allow configuration via API
