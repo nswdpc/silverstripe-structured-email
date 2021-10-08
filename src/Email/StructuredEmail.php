@@ -18,11 +18,30 @@ use Spatie\SchemaOrg\Action;
 use Spatie\SchemaOrg\Contracts\ActionContract;
 
 /**
- * Convert standard email template requests to structured email
+ * Provides a more structured/restricted way to send emails
+ * out of a Silverstripe instance
+ *
+ * Custom parameters
+ * StructuredEmail supports custom parameters
+ * but it is up to your configured Mailer to implement that,
+ * as implementation depends on the service used.
+ * The core Mailer does not support custom parameters
+ *
+ *
+ * @author James
+ *
  */
-class StructuredEmail extends Email {
+class StructuredEmail extends Email implements EmailWithCustomParameters {
 
+    /**
+     * Allow configuration via API
+     */
     use Configurable;
+
+    /**
+     * Custom parameters for the mailer, if it is supported
+     */
+    use CustomParameters;
 
     /**
      * @var bool
