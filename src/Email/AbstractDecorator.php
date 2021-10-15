@@ -2,8 +2,12 @@
 
 namespace NSWDPC\StructuredEmail;
 
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Manifest\ResourceURLGenerator;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLFragment;
+use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ViewableData;
 
 abstract class AbstractDecorator extends ViewableData {
@@ -161,11 +165,15 @@ CSS;
 
     /**
      * Return the masthead
+     * Use the placeholder `SiteConfig.Title` to return the result of that method
      * @return string
      */
     public function getMasthead() {
         $value = $this->config()->get('masthead');
-        if($value) {
+        if($value == "SiteConfig.Title") {
+            $config = SiteConfig::current_site_config();
+            return $config ? $config->Title : '';
+        } else if($value) {
             return _t('StructuredEmail.MASTHEAD', $value);
         } else {
             return '';
@@ -173,15 +181,31 @@ CSS;
     }
 
     /**
-     * Return the masthead
+     * Return the masthead link, if any
+     * Use the placeholder `Director.absoluteBaseURL` to return the result of that method
      * @return string
      */
     public function getMastheadLink() {
         $value = $this->config()->get('masthead_link');
-        if($value) {
-            return _t('StructuredEmail.MASTHEAD_LINK', $value);
+        if($value == "Director.absoluteBaseURL") {
+            return Director::absoluteBaseURL();
         } else {
-            return '';
+            return $value;
+        }
+    }
+
+    /**
+     * Return the signoff link, if any
+     * Use the placeholder `Director.absoluteBaseURL` to return the result of that method
+     * This link is displayed as text at the bottom of the email
+     * @return string
+     */
+    public function getSignoffLink() {
+        $value = $this->config()->get('signoff_link');
+        if($value == "Director.absoluteBaseURL") {
+            return Director::absoluteBaseURL();
+        } else {
+            return $value;
         }
     }
 
@@ -191,11 +215,11 @@ CSS;
      */
     public function getMastheadLogo() {
         $value = $this->config()->get('masthead_logo');
-        if($value) {
-            return $value;
-        } else {
+        if(!$value) {
             return '';
         }
+        $value = $this->convertToResourceUrl($value);
+        return $value;
     }
 
     /**
@@ -204,10 +228,25 @@ CSS;
      */
     public function getContentLogo() {
         $value = $this->config()->get('content_logo');
-        if($value) {
-            return $value;
-        } else {
+        if(!$value) {
             return '';
+        }
+        $value = $this->convertToResourceUrl($value);
+        return $value;
+    }
+
+    /**
+     * Convert parameter to a resource URL
+     * @param string resourceOrURL - either a absolute URL or a resource understandable by urlForResource
+     */
+    public function convertToResourceUrl($resourceOrURL) : string {
+        $scheme = parse_url($resourceOrURL, PHP_URL_SCHEME);
+        if($scheme != '') {
+            // return the URL
+            return $resourceOrURL;
+        } else {
+            // process path
+            return Injector::inst()->get(ResourceURLGenerator::class)->urlForResource($resourceOrURL);
         }
     }
 
