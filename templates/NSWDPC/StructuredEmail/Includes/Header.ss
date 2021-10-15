@@ -39,8 +39,8 @@
                                     <% with $Top.EmailDecorator %>
                                         <% if $ContentLogo %>
                                         <tr>
-                                            <td class="email-body_inner" align="center">
-                                                <img class="email-body_logo" src="{$ContentLogo}" border="0">
+                                            <td class="email-body_inner content-cell" align="center">
+                                                <img class="email-body_logo" src="{$ContentLogo}" border="0" style="max-width:100%;">
                                             </td>
                                         </tr>
                                         <% end_if %>
