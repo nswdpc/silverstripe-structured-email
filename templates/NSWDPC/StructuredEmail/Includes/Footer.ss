@@ -1,6 +1,8 @@
 
                                             </div><%-- f-fallback --%>
 
+                                            <% include NSWDPC/StructuredEmail/WithThanks %>
+
                                         </td><%-- content-cell --%>
 
                                     </tr>
