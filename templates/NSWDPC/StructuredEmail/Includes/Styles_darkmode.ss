@@ -19,6 +19,7 @@
     h2,
     h3,
     span,
+    a,
     .purchase_item {
         color: #FFF !important;
     }
