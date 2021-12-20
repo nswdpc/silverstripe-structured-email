@@ -114,33 +114,6 @@
         }
     }
 
-    @media (prefers-color-scheme: dark) {
-        body {
-            background-color: #333333 !important;
-            color: #FFF !important;
-        }
+    <% include NSWDPC/StructuredEmail/Styles_darkmode %>
 
-        p,
-        ul,
-        ol,
-        blockquote,
-        h1,
-        h2,
-        h3,
-        span,
-        .purchase_item {
-            color: #FFF !important;
-        }
-
-        .attributes_content,
-        .discount {
-            background-color: #222 !important;
-        }
-
-    }
-
-    :root {
-        color-scheme: light dark;
-        supported-color-schemes: light dark;
-    }
 </style>
