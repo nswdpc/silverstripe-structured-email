@@ -94,7 +94,7 @@ p.sub {
     text-align: center;
 }
 
-<% include NSWDPC/StructuredEmail/Style_buttons %>
+<% include NSWDPC/StructuredEmail/Styles_buttons %>
 
 /* Attribute list ------------------------------ */
 
