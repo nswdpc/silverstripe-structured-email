@@ -1,12 +1,12 @@
 /* Buttons ------------------------------ */
 
-.button {
-    background-color: $PrimaryColor;
-    border-width: 14px 18px;
-    border-color: $PrimaryColor;
+.email-body .button {
+    background-color: {$PrimaryColor} !important;
+    border-width: 14px 28px;
+    border-color: {$PrimaryColor} !important;
     border-style: solid;
     display: inline-block;
-    color: $PrimaryTextColor;
+    color: {$PrimaryTextColor} !important;
     text-decoration: none;
     border-radius: 4px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
@@ -14,20 +14,20 @@
     box-sizing: border-box;
 }
 
-.button--green {
-    background-color: #22BC66;
-    border-color: #22BC66;
+.email-body .button--green {
+    background-color: #22BC66 !important;
+    border-color: #22BC66 !important;
     color: #FFFFFF !important;
 }
 
-.button--red {
-    background-color: #FF6136;
-    border-color: #FF6136;
+.email-body .button--red {
+    background-color: #FF6136 !important;
+    border-color: #FF6136 !important;
     color: #FFFFFF !important;
 }
 
 @media only screen and (max-width: 500px) {
-    .button {
+    .email-body .button {
         width: 100% !important;
         text-align: center !important;
     }

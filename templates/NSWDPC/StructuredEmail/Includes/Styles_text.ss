@@ -1,5 +1,5 @@
-a {
-    color: $PrimaryColor;
+.email-body a {
+    color: {$PrimaryColor};
 }
 
 a img {
@@ -11,11 +11,11 @@ td {
 }
 
 p {
-    color: $Color;
+    color: {$Color};
 }
 
 p.sub {
-    color: $SubColor;
+    color: {$SubColor};
 }
 
 .preheader {
@@ -40,7 +40,7 @@ th {
 
 h1 {
     margin-top: 0;
-    color: #333333;
+    color: {$HeadingColor};
     font-size: 22px;
     font-weight: bold;
     text-align: left;
@@ -48,7 +48,7 @@ h1 {
 
 h2 {
     margin-top: 0;
-    color: $HeadingColor;
+    color: {$HeadingColor};
     font-size: 16px;
     font-weight: bold;
     text-align: left;
@@ -56,7 +56,7 @@ h2 {
 
 h3 {
     margin-top: 0;
-    color: $HeadingColor;
+    color: {$HeadingColor};
     font-size: 14px;
     font-weight: bold;
     text-align: left;

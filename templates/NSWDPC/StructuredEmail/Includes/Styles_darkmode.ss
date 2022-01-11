@@ -35,10 +35,10 @@
         color : {$DarkModeColor} !important;
     }
 
-    .button {
-        background-color: {$DarkModeColor} !important;
-        border-color: {$DarkModeColor} !important;
-        color: {$PrimaryColor} !important;
+    .email-body .button {
+        background-color: {$DarkModeButtonColor} !important;
+        border-color: {$DarkModeButtonColor} !important;
+        color: {$DarkModeColor} !important;
     }
 
     :root {
