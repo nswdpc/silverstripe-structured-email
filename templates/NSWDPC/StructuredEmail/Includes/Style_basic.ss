@@ -54,10 +54,6 @@
         background-color: #FFFFFF;
     }
 
-    .email-body_logo {
-        background-color: #FFFFFF;
-    }
-
     .email-footer {
         width: 570px;
         margin: 0 auto;

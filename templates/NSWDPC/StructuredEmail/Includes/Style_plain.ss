@@ -43,10 +43,6 @@
         -premailer-cellspacing: 0;
     }
 
-    .email-body_logo {
-        background-color: #FFFFFF;
-    }
-
     .email-body_inner {
         width: 570px;
         margin: 0 auto;
