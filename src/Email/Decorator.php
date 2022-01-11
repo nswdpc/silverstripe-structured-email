@@ -32,7 +32,10 @@ class Decorator extends AbstractDecorator {
         'PrimaryColor' => '#002664',
         'PrimaryTextColor' => '#ffffff',
         'HighlightColor' => '#d7153a',
-        'SecondaryColor' => '#2e5299'
+        'SecondaryColor' => '#2e5299',
+        'DarkModeBackgroundColor' => '#121212',
+        'DarkModeBackgroundSubColor' => '#121212',
+        'DarkModeColor' => '#ffffff'
     ];
 
     /**

@@ -31,25 +31,7 @@
         -premailer-cellspacing: 0;
     }
 
-    /* Masthead ----------------------- */
-
-    .email-masthead {
-        padding: 25px 0;
-        text-align: center;
-        background-color : $PrimaryColor;
-        color: $PrimaryTextColor;
-    }
-
-    .email-masthead_logo {
-        width: 94px;
-    }
-
-    .email-masthead_name {
-        font-size: 16px;
-        font-weight: bold;
-        color: $PrimaryTextColor;
-        text-decoration: none;
-    }
+    <% include NSWDPC/StructuredEmail/Styles_masthead %>
 
     /* Body ------------------------------ */
 
@@ -60,6 +42,10 @@
         -premailer-width: 100%;
         -premailer-cellpadding: 0;
         -premailer-cellspacing: 0;
+        background-color: #FFFFFF;
+    }
+
+    .email-body_logo {
         background-color: #FFFFFF;
     }
 

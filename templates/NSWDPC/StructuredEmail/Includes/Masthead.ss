@@ -1,23 +1,20 @@
 <% with $Top.EmailDecorator %>
     <% if $Masthead %>
     <tr>
-        <td class="email-masthead" bgcolor="{$PrimaryColor}" align="center">
-
+        <td class="email-masthead" align="center">
+            <div class="f-fallback email-masthead_name">
             <% if $MastheadLink %>
-            <a href="{$MastheadLink.XML}" class="f-fallback email-masthead_name">
                 <% if $MastheadLogo %>
-                <img class="email-masthead_logo" src="{$MastheadLogo}" width="90" height="90" border="0">
+                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="73">
                 <% end_if %>
-                <span>{$Masthead.XML}</span>
-            </a>
+                <p><a href="{$MastheadLink.XML}"><span>{$Masthead.XML}<% if $Top.EmailReason %> - {$Top.EmailReason.XML}<% end_if %></span></a></p>
             <% else %>
-            <span class="f-fallback email-masthead_name">
                 <% if $MastheadLogo %>
-                <img class="email-masthead_logo" src="{$MastheadLogo}" width="90" height="90" border="0">
+                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="73">
                 <% end_if %>
-                <span>{$Masthead.XML}</span>
-            </span>
+                <p><span>{$Masthead.XML}<% if $Top.EmailReason %> - {$Top.EmailReason.XML}<% end_if %></span></p>
             <% end_if %>
+            </div>
         </td>
     </tr>
     <% else %>

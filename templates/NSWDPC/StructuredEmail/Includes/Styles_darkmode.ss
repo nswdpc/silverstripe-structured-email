@@ -5,10 +5,14 @@
     .email-body_inner,
     .email-content,
     .email-wrapper,
-    .email-masthead,
     .email-footer {
-        background-color: #333333 !important;
-        color: #FFF !important;
+        background-color: {$DarkModeBackgroundColor} !important;
+        color: {$DarkModeColor} !important;
+    }
+
+    .email-masthead {
+        background-color: {$DarkModeBackgroundSubColor} !important;
+        color: {$DarkModeColor} !important;
     }
 
     p,
@@ -20,13 +24,21 @@
     h3,
     span,
     a,
+    .email-masthead a.email-masthead_name span,
     .purchase_item {
-        color: #FFF !important;
+        color: {$DarkModeColor} !important;
     }
 
     .attributes_content,
     .discount {
-        background-color: #222 !important;
+        background-color: {$DarkModeBackgroundColor} !important;
+        color : {$DarkModeColor} !important;
+    }
+
+    .button {
+        background-color: {$DarkModeColor} !important;
+        border-color: {$DarkModeColor} !important;
+        color: {$PrimaryColor} !important;
     }
 
     :root {
