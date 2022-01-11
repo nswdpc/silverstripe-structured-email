@@ -132,10 +132,13 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         // check if a body is set, if so use that
         $body = $this->getBody();
 
+        // email data
+        $data = $this->getData();
+
         if(!$body) {
             // email called with data and a template
             // render data into that template
-            $body = ViewableData::create()->renderWith($template, $this->getData());
+            $body = ViewableData::create()->renderWith($template, $data);
         }
 
         // clean the HTML, removing everything that cannot go in a body tag
@@ -143,8 +146,10 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
         // override this email's data with the rendered template
         $this->addData('Body', $body);
+
         // ensure a preheader is set, even if an empty string but if not already set
-        if(!isset($this->data['Preheader'])) {
+        if( (is_array($data) && !isset($data['Preheader']))
+            || (is_object($data) && !isset($data->Preheader)) ) {
             $this->addData('Preheader', $this->getPreheader());
         }
 
@@ -353,8 +358,16 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         // Do not interfere with emails styles
         Requirements::clear();
 
+        // email data
+        $data = $this->getData();
+
         // the email body, pre-rendered
-        $bodyPart = isset($this->data['Body']) ? strval($this->data['Body']) : '';
+        $bodyPart = '';
+        if(is_array($data) && isset($data['Body'])) {
+            $bodyPart = strval($data['Body']);
+        } else if(is_object($data) && isset($data->Body)) {
+            $bodyPart = strval($data->Body);
+        }
 
         // Create the HTML document
         $htmlTemplate = $this->getHTMLTemplate();
