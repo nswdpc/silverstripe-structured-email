@@ -141,8 +141,6 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         // clean the HTML, removing everything that cannot go in a body tag
         $body = $this->cleanHTMLDocument($body);
 
-        // clear all data on this email
-        $this->setData([]);
         // override this email's data with the rendered template
         $this->addData('Body', $body);
         // ensure a preheader is set, even if an empty string but if not already set
