@@ -11,6 +11,8 @@ use SilverStripe\Control\HTTP;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\ViewableData;
 use SilverStripe\View\Requirements;
@@ -466,28 +468,42 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
     /**
      * In your email template, use $Schema.RAW within a script ld+json tag
      * Return the Schema.org script for this message
+     * @return DBHTMLText|false
      */
-    public function getSchema() : string {
+    public function getEmailSchema() {
 
-        // create base schema
-        $emailMessage = Schema::emailMessage();
+        try {
 
-        // about
-        if($subject = $this->getSubject() ) {
-            $emailMessage->about( Schema::thing()->name( $subject ) );
+            // create base schema
+            $emailMessage = Schema::emailMessage();
+
+            // about
+            if($subject = $this->getSubject() ) {
+                $emailMessage->about( Schema::thing()->name( $subject ) );
+            }
+
+            // abstract
+            if($abstract = $this->getPreheader()) {
+                $emailMessage->abstract( $abstract );
+            }
+
+            // add potentialAction on
+            if($action = $this->getAction()) {
+                $emailMessage->action( $action );
+            }
+
+            $script = $emailMessage->toScript();
+
+            $html = DBField::create_field(
+                DBHTMLText::class,
+                $script
+            );
+
+        } catch (\Exception $e) {
+            // on error, do not return a schema.org snippet
+            $html = false;
         }
-
-        // abstract
-        if($abstract = $this->getPreheader()) {
-            $emailMessage->abstract( $abstract );
-        }
-
-        // add potentialAction on
-        if($action = $this->getAction()) {
-            $emailMessage->action( $action );
-        }
-
-        return $emailMessage->toScript();
+        return $html;
 
     }
 
