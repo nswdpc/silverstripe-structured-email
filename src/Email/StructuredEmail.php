@@ -290,7 +290,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         }
 
         // render the email into the structured email template
-        $this->renderIntoStructuredEmail();
+        $this->renderIntoStructuredEmail( $this->getPlainTemplate() );
 
         // only render the plain part
         $this->render(true);
