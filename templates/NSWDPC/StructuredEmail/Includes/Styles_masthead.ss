@@ -1,7 +1,7 @@
 /* Masthead ----------------------- */
 
 .email-masthead {
-    padding: 25px 0;
+    padding: 12px 0;
     text-align: center;
     background-color : {$PrimaryColor};
     color: {$PrimaryTextColor};
@@ -9,7 +9,7 @@
 
 .email-masthead .email-masthead_name p {
     margin : 0;
-    padding : 25px 0 0 0;
+    padding : 0;
 }
 
 .email-masthead .email-masthead_name a {

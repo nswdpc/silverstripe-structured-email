@@ -42,3 +42,7 @@
                                         <td class="content-cell">
 
                                             <div class="f-fallback">
+
+                                                <!-- contentlogo -->
+                                                <% include NSWDPC/StructuredEmail/ContentLogo %>
+                                                <!-- end contentlogo -->

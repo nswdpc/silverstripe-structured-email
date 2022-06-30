@@ -5,12 +5,12 @@
             <div class="f-fallback email-masthead_name">
             <% if $MastheadLink %>
                 <% if $MastheadLogo %>
-                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="73">
+                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="48">
                 <% end_if %>
                 <p><a href="{$MastheadLink.XML}"><span>{$Masthead.XML}<% if $Top.EmailReason %> - {$Top.EmailReason.XML}<% end_if %></span></a></p>
             <% else %>
                 <% if $MastheadLogo %>
-                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="73">
+                <img class="email-masthead_logo" src="{$MastheadLogo}" border="0" height="48">
                 <% end_if %>
                 <p><span>{$Masthead.XML}<% if $Top.EmailReason %> - {$Top.EmailReason.XML}<% end_if %></span></p>
             <% end_if %>

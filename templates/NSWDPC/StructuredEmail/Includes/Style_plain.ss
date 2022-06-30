@@ -31,6 +31,7 @@
     }
 
     <% include NSWDPC/StructuredEmail/Styles_masthead %>
+    <% include NSWDPC/StructuredEmail/Styles_contentlogo %>
 
     /* Body ------------------------------ */
 
