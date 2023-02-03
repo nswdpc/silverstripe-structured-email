@@ -1,14 +1,1 @@
-<p>
-<%t StructuredEmail.THANKS 'Thanks '%>
-<br>
-<% if $SiteConfig %>
-<br>
-{$SiteConfig.Title}
-<% end_if %>
-<% with $Top.EmailDecorator %>
-<% if $SignOffLink %>
-<br>
-{$SignOffLink.XML}
-<% end_if %>
-<% end_with %>
-</p>
+<%-- override this template in your project to provide a generic sign-off  to the email, if required --%>

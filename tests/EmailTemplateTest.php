@@ -14,7 +14,7 @@ class EmailTemplateTest extends SapphireTest {
         Member::class => '*',
     ];
 
-    protected $usesDatabase = false;
+    protected $usesDatabase = null;
 
     private function saveOutput($html, $template,  $ext = ".html") {
         $full = dirname(__FILE__) . '/__output/' . $template;
@@ -29,13 +29,15 @@ class EmailTemplateTest extends SapphireTest {
             'Body' => file_get_contents(dirname(__FILE__) . '/data/template.html')
         ];
 
+        $subject = 'Welcome to the show';
+
         $email = StructuredEmail::create();
         $email->setTo("to@example.com");
         $email->setCc("cc@example.com");
         $email->setBcc("bcc@example.com");
         $email->setFrom(["from@example.com" => "Jiminy Crickets", "another@example.com" => "Bob Pokemon"]);
         $email->addFrom("secondary@example.com");
-        $email->setSubject('Welcome to the show');
+        $email->setSubject($subject);
         $email->setPreheader('Test generic email that needs your attention');
         $email->setData($data);
         $email->setViewAction('Confirm your identify', 'https://confirm.example.com?token=suitably-long-token');
@@ -48,6 +50,14 @@ class EmailTemplateTest extends SapphireTest {
         $message = $email->getSwiftMessage();
         $this->saveOutput($message, "StructuredEmail", ".txt");
 
+
+        // assert email contains subject
+        $this->assertStringContainsString(
+            "Subject: " . $subject,
+            $message
+        );
+
+
     }
 
     /**
@@ -57,16 +67,18 @@ class EmailTemplateTest extends SapphireTest {
         $template = 'SilverStripe/Control/Email/ForgotPasswordEmail';
         $token = "really-bad-token";
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
+        $resetPasswordLink = Security::getPasswordResetLink($member, $token);
+        $subject = _t(
+            'SilverStripe\\Security\\Member.SUBJECTPASSWORDRESET',
+            "Your password reset link",
+            'Email subject'
+        );
         /** @var StructuredEmail $email */
         $email = StructuredEmail::create()
             ->setHTMLTemplate($template)
             ->setData($member)
-            ->setSubject(_t(
-                'SilverStripe\\Security\\Member.SUBJECTPASSWORDRESET',
-                "Your password reset link",
-                'Email subject'
-            ))
-            ->addData('PasswordResetLink', Security::getPasswordResetLink($member, $token))
+            ->setSubject($subject)
+            ->addData('PasswordResetLink', $resetPasswordLink)
             ->setTo($member->Email);
         // test preheader
         $email->setPreHeader(
@@ -81,31 +93,52 @@ class EmailTemplateTest extends SapphireTest {
         $message = $email->getSwiftMessage();
         $this->saveOutput($message, "ForgotPasswordEmail", ".txt");
 
-        // test that email is rendered with link and in structured email
+        // test that email is rendered with reset link and in structured email
+        $this->assertStringContainsString(
+            htmlspecialchars($resetPasswordLink), // entitised link
+            $html // in the HTML
+        );
+
+        // assert email contains subject
+        $this->assertStringContainsString(
+            "Subject: " . $subject,
+            $message
+        );
+
     }
 
     public function testChangePassword() {
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
+        $subject = _t(
+            'SilverStripe\\Security\\Member.SUBJECTPASSWORDCHANGED',
+            "Your password has been changed",
+            'Email subject'
+        );
         $email = StructuredEmail::create()
             ->setHTMLTemplate('SilverStripe\\Control\\Email\\ChangePasswordEmail')
             ->setData($member)
             ->setTo($member->Email)
             ->setFrom('from@example.com')
-            ->setSubject(_t(
-                'SilverStripe\\Security\\Member.SUBJECTPASSWORDCHANGED',
-                "Your password has been changed",
-                'Email subject'
-            ));
+            ->setSubject($subject);
         $email->send();
 
         $this->saveOutput($email->getBody(), "ChangePasswordEmail");
 
         $message = $email->getSwiftMessage();
         $this->saveOutput($message, "ChangePasswordEmail", ".txt");
+
+        // assert email contains subject
+        $this->assertStringContainsString(
+            "Subject: " . $subject,
+            $message
+        );
+
+
     }
 
     public function testStandardEmail() {
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
+        $subject = 'Subject of an important message';
         $email = StructuredEmail::create()
             ->setHTMLTemplate('SilverStripe\\Control\\Email\\Email')
             ->setData([
@@ -114,13 +147,21 @@ class EmailTemplateTest extends SapphireTest {
             ->setPreHeader('An important message')
             ->setTo($member->Email)
             ->setFrom('from@example.com')
-            ->setSubject('Subject of an important message');
+            ->setSubject($subject);
         $email->send();
 
         $this->saveOutput($email->getBody(), "StandardEmail");
 
         $message = $email->getSwiftMessage();
         $this->saveOutput($message, "StandardEmail", ".txt");
+
+        // assert email contains subject
+        $this->assertStringContainsString(
+            "Subject: " . $subject,
+            $message
+        );
+
+
     }
 
 }

@@ -1,9 +1,5 @@
 /client/node_modules
 /vendor/
 .DS_Store
-/.php_cs.cache
-/resources/
-/_resources/
-/public/
-/assets/
+/.php-cs-fixer.cache
 /tests/__output/

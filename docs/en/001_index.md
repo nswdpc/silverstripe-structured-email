@@ -10,15 +10,15 @@ This module handles the templating of the email, leaving you to figure out what 
 
 We add:
 
-+ Standard, proven email templates based on https://github.com/wildbit/postmark-templates
++ Standard, proven email templates based on https://github.com/ActiveCampaign/postmark-templates
 + A Structured Email class
 + An Injectable email decorator containing standard CSS values
 + Structured template parts allowing you to override as required
++ 🧫 Automated text/plain content creation (as markdown)
 
 ### Planned features
 
-+ ⚠️ 🧫 Schema.org support
-+ ⚠️ 🧫 Automated text/plain content creation (as markdown)
++ ⚠️ 🧫 improved Schema.org support
 
 ### Stretch goals
 
