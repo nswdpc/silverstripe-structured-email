@@ -2,9 +2,7 @@
 
 The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)). The templates used are based on the [Postmark Transactional Email Templates](https://github.com/ActiveCampaign/postmark-templates).
 
-> :warning: This module is under active development and shouldn't be used in production just yet as there are probably bugs. Test results, pull requests and feedback are welcome.
-
-The `StructuredEmail` extends the `Email` class. You can use it standalone or you may wish to inject StructuredEmail as the Email class for your project using `Injector`.
+The `StructuredEmail` class extends the `Email` class. You can use it standalone or you may wish to inject StructuredEmail as the Email class for your project using `Injector`.
 
 For specific core emails, it will attempt to detect the purpose of the email based on the template name:
 
@@ -20,7 +18,7 @@ TODO:
 
 ### Existing templates
 
-If the class encounters a complete HTML document in the email, it will use HTML contained within the `<body>` tag as the email content.
+If the class encounters a complete HTML document in the email, it will use HTML contained within the `<body>` tag of that document as the email content.
 
 ## Schema.org
 

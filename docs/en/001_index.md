@@ -14,11 +14,11 @@ We add:
 + A Structured Email class
 + An Injectable email decorator containing standard CSS values
 + Structured template parts allowing you to override as required
++ 🧫 Automated text/plain content creation (as markdown)
 
 ### Planned features
 
-+ ⚠️ 🧫 Schema.org support
-+ ⚠️ 🧫 Automated text/plain content creation (as markdown)
++ ⚠️ 🧫 improved Schema.org support
 
 ### Stretch goals
 

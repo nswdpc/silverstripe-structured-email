@@ -22,6 +22,7 @@ $email->setViewAction(
     'https://confirm.example.com?token=suitably-long-token'
 );
 ```
+Internally, a `\Spatie\SchemaOrg\ViewAction` will be created using the name and URL provided.
 
 This will result in the following HTML snippet in the template:
 
@@ -50,6 +51,7 @@ You can also define a generic action:
 
 ```php
 <?php
+/* @var Spatie\SchemaOrg\Action */
 $action = Schema::action()
     ->name('Carry out this action')
     ->handler(
