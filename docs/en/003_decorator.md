@@ -67,7 +67,7 @@ print get_class($decorator);
 
 ### Set the layout type
 
-A layout type allows you some control over the HTML width ([more](https://github.com/wildbit/mailmason/wiki/Project-Structure#layouts))
+A layout type allows you some control over the HTML width ([more](https://github.com/ActiveCampaign/mailmason/wiki/Project-Structure#layouts))
 
 + basic-full = full width
 + basic = single centred column
