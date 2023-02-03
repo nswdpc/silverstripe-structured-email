@@ -2,3 +2,4 @@
 /vendor/
 .DS_Store
 /.php-cs-fixer.cache
+/tests/__output/
