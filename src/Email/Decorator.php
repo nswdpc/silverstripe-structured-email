@@ -35,7 +35,8 @@ class Decorator extends AbstractDecorator {
         'SecondaryColor' => '#2e5299',
         'DarkModeBackgroundColor' => '#121212',
         'DarkModeBackgroundSubColor' => '#333333',
-        'DarkModeColor' => '#ffffff'
+        'DarkModeColor' => '#ffffff',
+        'DarkModeButtonColor' => '#002664'
     ];
 
     /**
