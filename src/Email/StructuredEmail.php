@@ -174,8 +174,6 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
         try {
 
-            // it's possible the HTML is entitised, or partially so
-            $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
             // clear out all newlines to avoid nl2br fun
             $html = str_replace(["\n","\r"], "", $html);
 
