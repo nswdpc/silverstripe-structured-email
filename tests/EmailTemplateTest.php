@@ -1,6 +1,6 @@
 <?php
 
-namespace NSWDPC\StructuredEmail;
+namespace NSWDPC\StructuredEmail\Tests;
 
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Security\Member;
