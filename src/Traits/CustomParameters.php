@@ -16,25 +16,19 @@ trait CustomParameters
      */
     private $customParameters = [];
 
-    /**
-     * @param array $args
-     */
     public function setCustomParameters(array $args)
     {
         $this->customParameters = $args;
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getCustomParameters(): array
     {
         return $this->customParameters;
     }
 
     /**
-     * @param array $args
+     * Clear all custom parameters
      */
     public function clearCustomParameters()
     {

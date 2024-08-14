@@ -46,19 +46,18 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      */
     use CustomParameters;
 
-    /**
-     * @var bool
-     */
-    private static $is_structured = true;
+    private static bool $is_structured = true;
 
     /**
      * Process HTML with DOMDocument
      */
     public const HTML_CLEANER_DOMDOCUMENT = 'DOMDocument';
+
     /**
      * Process HTML with strip_tags
      */
     public const HTML_CLEANER_STRIPTAGS = 'strip_tags';
+
     /**
      * Process HTML with tidy
      */
@@ -68,19 +67,12 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      * Used to retrieve the contents of a <body> from provided templates
      * The default HTML document cleaner is tidy
      * if not found or installed, strip_tags will be used
-     * @var string
      */
-    private static $html_cleaner = self::HTML_CLEANER_TIDY;
+    private static string $html_cleaner = self::HTML_CLEANER_TIDY;
 
-    /**
-     * @var NSWDPC\StructuredEmail\AbstractDecorator
-     **/
-    private $decorator = null;
+    private ?\NSWDPC\StructuredEmail\AbstractDecorator $decorator = null;
 
-    /**
-     * @var string
-     */
-    private $email_template = "NSWDPC/StructuredEmail/StructuredEmail";
+    private string $email_template = "NSWDPC/StructuredEmail/StructuredEmail";
 
     /**
      * @var string
@@ -88,9 +80,9 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
     protected $pre_header = '';
 
     /**
-     * @var Action|null
+     * @var ActionContract|null
      */
-    protected $email_message_action = null;
+    protected $email_message_action;
 
     /**
      * @inheritdoc
@@ -109,27 +101,21 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         parent::setHTMLTemplate($this->email_template);
     }
 
-    /**
-     * @return self
-     */
     public function setDecorator(AbstractDecorator $decorator): self
     {
         $this->decorator = $decorator;
         return $this;
     }
 
-    /**
-     * @return AbstractDecorator
-     */
     public function getDecorator(): AbstractDecorator
     {
-        return $this->decorator ? $this->decorator : Injector::inst()->get(Decorator::class);
+        return $this->decorator ?: Injector::inst()->get(Decorator::class);
     }
 
     /**
      * Rendered the data provided into a into the structured email template
      */
-    protected function renderIntoStructuredEmail(string $template)
+    protected function renderIntoStructuredEmail(string $template): static
     {
         Requirements::clear();
 
@@ -153,7 +139,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
         // ensure a preheader is set, even if an empty string but if not already set
         if ((is_array($data) && !isset($data['Preheader']))
-            || (is_object($data) && !isset($data->Preheader))) {
+            || (($data instanceof ViewableData) && !$data->hasField('Preheader'))) {
             $this->addData('Preheader', $this->getPreheader());
         }
 
@@ -180,7 +166,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             $html = str_replace(["\n","\r"], "", $html);
 
             // Sneaky check if no <body occurs in the document - bail if so
-            if (strpos($html, "<body") === false) {
+            if (!str_contains($html, "<body")) {
                 return $html;
             }
 
@@ -197,6 +183,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                     if (!$body instanceof \DOMNode) {
                         throw new \Exception("Failed to find body in document");
                     }
+
                     // create an element to hold body child nodes
                     $element = $dom->createElement('div');
                     foreach ($body->childNodes as $node) {
@@ -204,6 +191,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                             $element->appendChild($node);
                         }
                     }
+
                     $result = $dom->saveHTML($element);
                     $result .= "<!-- dd -->";
                     libxml_clear_errors();
@@ -229,11 +217,10 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                         ],
                         'utf8'
                     );
-                    $html .= "<!-- tidy -->";
-                    return $html;
+                    return $html . "<!-- tidy -->";
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // NOOP on error - but failover to the default
         }
 
@@ -246,8 +233,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             . '<strong><em><a><span><i><b><code><cite>'
             . '<table><th><td><tr><caption><thead><tbody><tfoot>'
         );
-        $html .= "<!-- st -->";
-        return $html;
+        return $html . "<!-- st -->";
     }
 
     /**
@@ -315,6 +301,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                 // merge custom fields on top of base data to allow override
                 $data = array_merge($data, $customFields);
             }
+
             // ensure it is a viewable data
             $customFields = ViewableData::create();
         }
@@ -325,6 +312,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
         $customFields->setField('EmailDecorator', $this->getDecorator());
 
+        /** @phpstan-ignore argument.type */
         return parent::renderWith($template, $customFields);
     }
 
@@ -338,6 +326,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         if (!$this->config()->get('is_structured')) {
             return parent::hasPlainPart();
         }
+
         return true;
     }
 
@@ -364,8 +353,8 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         $bodyPart = '';
         if (is_array($data) && isset($data['Body'])) {
             $bodyPart = strval($data['Body']);
-        } elseif (is_object($data) && isset($data->Body)) {
-            $bodyPart = strval($data->Body);
+        } elseif (($data instanceof ViewableData) && $data->hasField('Body')) {
+            $bodyPart = strval($data->getField('Body'));
         }
 
         // Create the HTML document
@@ -405,9 +394,10 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                 'text/plain',
                 'utf-8'
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // failed to convert!
         }
+
         return $this;
     }
 
@@ -419,7 +409,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
     protected function applyPreheader(string $template)
     {
         $preHeader = $this->getPreheader();
-        if (!$preHeader) {
+        if ($preHeader !== '') {
             switch ($template) {
                 case 'SilverStripe/Control/Email/ForgotPasswordEmail':
                     $this->setPreHeader(
@@ -444,7 +434,6 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
     /**
      * Set the preheader for this specific email
      * @see https://postmarkapp.com/support/article/1220-adding-preheader-text-to-your-messages
-     * @param string
      */
     public function setPreHeader(string $value): self
     {
@@ -454,7 +443,6 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
     /**
      * Return the preheader
-     * @return string
      */
     public function getPreheader(): string
     {
@@ -483,13 +471,13 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             }
 
             // abstract
-            if ($abstract = $this->getPreheader()) {
+            if (($abstract = $this->getPreheader()) !== '') {
                 $emailMessage->abstract($abstract);
             }
 
             // add potentialAction on
-            if ($action = $this->getAction()) {
-                $emailMessage->action($action);
+            if (($action = $this->getAction()) instanceof \Spatie\SchemaOrg\Contracts\ActionContract) {
+                $emailMessage->potentialAction($action);
             }
 
             $script = $emailMessage->toScript();
@@ -498,18 +486,18 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                 DBHTMLText::class,
                 $script
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // on error, do not return a schema.org snippet
             $html = false;
         }
+
         return $html;
     }
 
     /**
-     * @return ActionContract|null
      * The action must implement {@link https://github.com/spatie/schema-org/blob/master/src/Contracts/ActionContract.php}
      */
-    public function getAction()
+    public function getAction(): ?ActionContract
     {
         return $this->email_message_action;
     }
@@ -518,7 +506,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      * Set a potentialAction from schema.org actions
      * @see https://schema.org/potentialAction
      */
-    public function setAction(ActionContract $action)
+    public function setAction(?ActionContract $action): static
     {
         $this->email_message_action = $action;
         return $this;

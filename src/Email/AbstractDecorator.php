@@ -13,23 +13,19 @@ use SilverStripe\View\ViewableData;
 abstract class AbstractDecorator extends ViewableData
 {
     public const LAYOUT_TYPE_BASIC = 'basic';
+
     public const LAYOUT_TYPE_BASIC_FULL = 'basic-full';
+
     public const LAYOUT_TYPE_PLAIN = 'plain';
 
-    /**
-     * @var array
-     */
-    private static $decorations = [];
+    private static array $decorations = [];
 
     /**
      * @var array
      */
     private $_cache_decorations = [];
 
-    /**
-     * @var array
-     */
-    private static $font_sources = [];
+    private static array $font_sources = [];
 
     /**
      * @var string
@@ -40,25 +36,25 @@ abstract class AbstractDecorator extends ViewableData
      * @var string
      * Masthead text, will have HTML removed
      */
-    private static $masthead = '';
+    private static string $masthead = '';
 
     /**
      * @var string
      * URL to masthead logo, can be used with/without a Content logo
      */
-    private static $masthead_logo = '';
+    private static string $masthead_logo = '';
 
     /**
      * @var string
      * URL to content logo, can be used with/without a Masthead logo
      */
-    private static $content_logo = '';
+    private static string $content_logo = '';
 
     /**
      * @var string
      * HTML physical address of sender
      */
-    private static $physical_address = '';
+    private static string $physical_address = '';
 
     /**
      * @inheritdoc
@@ -77,20 +73,15 @@ abstract class AbstractDecorator extends ViewableData
         return isset($this->_cache_decorations[ $field ]);
     }
 
-    /**
-     * @return array
-     */
     protected function getDecorations(): array
     {
         if (empty($this->_cache_decorations)) {
             $this->_cache_decorations = $this->config()->get('decorations');
         }
+
         return $this->_cache_decorations;
     }
 
-    /**
-     * @return string
-     */
     protected function getDecoration(string $decoration): string
     {
         $this->getDecorations();
@@ -100,7 +91,6 @@ abstract class AbstractDecorator extends ViewableData
 
     /**
      * Return the decorator as CSS for inlining in a template
-     * @return string
      */
     public function forTemplate(): string
     {
@@ -112,6 +102,7 @@ abstract class AbstractDecorator extends ViewableData
                 $font_sources_value .= "@import url(\"{$font_source}\");\n";
             }
         }
+
         return <<<CSS
 /* font sources */
 {$font_sources_value}
@@ -126,9 +117,6 @@ body {
 CSS;
     }
 
-    /**
-     * @return self
-     */
     public function setLayoutType(string $type): self
     {
         $this->layout_type = $type;
@@ -137,7 +125,6 @@ CSS;
 
     /**
      * Called via Decorator.LayoutType
-     * @return string
      */
     public function getLayoutType(): string
     {
@@ -179,7 +166,7 @@ CSS;
     public function getMasthead()
     {
         $value = $this->config()->get('masthead');
-        if ($value == "SiteConfig.Title") {
+        if ($value == "SiteConfig.Title" && class_exists(SiteConfig::class)) {
             $config = SiteConfig::current_site_config();
             return $config ? $config->Title : '';
         } elseif ($value) {
@@ -230,8 +217,7 @@ CSS;
         if (!$value) {
             return '';
         }
-        $value = $this->convertToResourceUrl($value);
-        return $value;
+        return $this->convertToResourceUrl($value);
     }
 
     /**
@@ -244,15 +230,14 @@ CSS;
         if (!$value) {
             return '';
         }
-        $value = $this->convertToResourceUrl($value);
-        return $value;
+        return $this->convertToResourceUrl($value);
     }
 
     /**
      * Convert parameter to a resource URL
-     * @param string resourceOrURL - either a absolute URL or a resource understandable by urlForResource
+     * @param string $resourceOrURL - either a absolute URL or a resource understandable by urlForResource
      */
-    public function convertToResourceUrl($resourceOrURL): string
+    public function convertToResourceUrl(string $resourceOrURL): string
     {
         $scheme = parse_url($resourceOrURL, PHP_URL_SCHEME);
         if ($scheme != '') {

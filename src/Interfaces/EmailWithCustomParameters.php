@@ -13,14 +13,10 @@ namespace NSWDPC\StructuredEmail;
 interface EmailWithCustomParameters
 {
     /**
-     * @param array $args
      * @return self
      */
     public function setCustomParameters(array $args);
 
-    /**
-     * @return array
-     */
     public function getCustomParameters(): array;
 
     /**
