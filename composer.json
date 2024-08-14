@@ -31,7 +31,7 @@
         "silverstripe/framework": "^4.10",
         "league/html-to-markdown": "^5",
         "spatie/schema-org": "^3.5",
-        "nswdpc/silverstripe-taggable-notifications": "^0.3"
+        "nswdpc/silverstripe-taggable-notifications": "dev-auto-updates as 0.3.9999"
     },
     "suggest": {
         "ext-xml": "Use DOMDocument to process HTML documents",
