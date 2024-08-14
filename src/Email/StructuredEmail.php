@@ -109,7 +109,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
 
     public function getDecorator(): AbstractDecorator
     {
-        return $this->decorator ?: Injector::inst()->get(Decorator::class);
+        return $this->decorator instanceof \NSWDPC\StructuredEmail\AbstractDecorator ? $this->decorator : Injector::inst()->get(Decorator::class);
     }
 
     /**

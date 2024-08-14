@@ -217,6 +217,7 @@ CSS;
         if (!$value) {
             return '';
         }
+
         return $this->convertToResourceUrl($value);
     }
 
@@ -230,6 +231,7 @@ CSS;
         if (!$value) {
             return '';
         }
+
         return $this->convertToResourceUrl($value);
     }
 
