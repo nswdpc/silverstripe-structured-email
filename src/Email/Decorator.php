@@ -8,9 +8,8 @@ use SilverStripe\View\ViewableData;
 /**
  * Standard decorator for inlining styles into emails
  */
-class Decorator extends AbstractDecorator {
-
-
+class Decorator extends AbstractDecorator
+{
     use Injectable;
 
     /**
@@ -43,6 +42,4 @@ class Decorator extends AbstractDecorator {
      * @var array
      */
     private static $font_sources = [];
-
-
 }

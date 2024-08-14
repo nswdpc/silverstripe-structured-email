@@ -6,8 +6,8 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 
-class EmailTemplateTest extends SapphireTest {
-
+class EmailTemplateTest extends SapphireTest
+{
     protected static $fixture_file = 'EmailTemplateTest.yml';
 
     protected static $illegal_extensions = [
@@ -16,15 +16,16 @@ class EmailTemplateTest extends SapphireTest {
 
     protected $usesDatabase = null;
 
-    private function saveOutput($html, $template,  $ext = ".html") {
+    private function saveOutput($html, $template, $ext = ".html")
+    {
         $full = dirname(__FILE__) . '/__output/' . $template;
         $path = dirname($full);
         @mkdir($path, 0700, true);
         file_put_contents($full . $ext, $html);
     }
 
-    public function testTemplate() {
-
+    public function testTemplate()
+    {
         $data = [
             'Body' => file_get_contents(dirname(__FILE__) . '/data/template.html')
         ];
@@ -56,14 +57,13 @@ class EmailTemplateTest extends SapphireTest {
             "Subject: " . $subject,
             $message
         );
-
-
     }
 
     /**
      * Send a forgot password email
      */
-    public function testForgotEmail() {
+    public function testForgotEmail()
+    {
         $template = 'SilverStripe/Control/Email/ForgotPasswordEmail';
         $token = "really-bad-token";
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
@@ -104,10 +104,10 @@ class EmailTemplateTest extends SapphireTest {
             "Subject: " . $subject,
             $message
         );
-
     }
 
-    public function testChangePassword() {
+    public function testChangePassword()
+    {
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
         $subject = _t(
             'SilverStripe\\Security\\Member.SUBJECTPASSWORDCHANGED',
@@ -132,11 +132,10 @@ class EmailTemplateTest extends SapphireTest {
             "Subject: " . $subject,
             $message
         );
-
-
     }
 
-    public function testStandardEmail() {
+    public function testStandardEmail()
+    {
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
         $subject = 'Subject of an important message';
         $email = StructuredEmail::create()
@@ -160,8 +159,5 @@ class EmailTemplateTest extends SapphireTest {
             "Subject: " . $subject,
             $message
         );
-
-
     }
-
 }

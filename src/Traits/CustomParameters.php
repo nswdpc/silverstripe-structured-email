@@ -9,8 +9,8 @@ namespace NSWDPC\StructuredEmail;
  * @author James
  *
  */
-trait CustomParameters {
-
+trait CustomParameters
+{
     /**
      * @var array
      */
@@ -19,7 +19,8 @@ trait CustomParameters {
     /**
      * @param array $args
      */
-    public function setCustomParameters(array $args) {
+    public function setCustomParameters(array $args)
+    {
         $this->customParameters = $args;
         return $this;
     }
@@ -27,16 +28,17 @@ trait CustomParameters {
     /**
      * @return array
      */
-    public function getCustomParameters() : array {
+    public function getCustomParameters(): array
+    {
         return $this->customParameters;
     }
 
     /**
      * @param array $args
      */
-    public function clearCustomParameters() {
+    public function clearCustomParameters()
+    {
         $this->customParameters = [];
         return $this;
     }
-
 }

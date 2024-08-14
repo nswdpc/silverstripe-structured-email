@@ -10,11 +10,11 @@ use SilverStripe\ORM\FieldType\DBHTMLFragment;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ViewableData;
 
-abstract class AbstractDecorator extends ViewableData {
-
-    const LAYOUT_TYPE_BASIC = 'basic';
-    const LAYOUT_TYPE_BASIC_FULL = 'basic-full';
-    const LAYOUT_TYPE_PLAIN = 'plain';
+abstract class AbstractDecorator extends ViewableData
+{
+    public const LAYOUT_TYPE_BASIC = 'basic';
+    public const LAYOUT_TYPE_BASIC_FULL = 'basic-full';
+    public const LAYOUT_TYPE_PLAIN = 'plain';
 
     /**
      * @var array
@@ -71,7 +71,8 @@ abstract class AbstractDecorator extends ViewableData {
     /**
      * @inheritdoc
      */
-    public function hasField($field) {
+    public function hasField($field)
+    {
         $this->getDecorations();
         return isset($this->_cache_decorations[ $field ]);
     }
@@ -79,8 +80,9 @@ abstract class AbstractDecorator extends ViewableData {
     /**
      * @return array
      */
-    protected function getDecorations() : array {
-        if(empty($this->_cache_decorations)) {
+    protected function getDecorations(): array
+    {
+        if (empty($this->_cache_decorations)) {
             $this->_cache_decorations = $this->config()->get('decorations');
         }
         return $this->_cache_decorations;
@@ -89,7 +91,8 @@ abstract class AbstractDecorator extends ViewableData {
     /**
      * @return string
      */
-    protected function getDecoration(string $decoration) : string {
+    protected function getDecoration(string $decoration): string
+    {
         $this->getDecorations();
         $value = $this->_cache_decorations[ $decoration ] ?: '';
         return strval($value);
@@ -99,12 +102,13 @@ abstract class AbstractDecorator extends ViewableData {
      * Return the decorator as CSS for inlining in a template
      * @return string
      */
-    public function forTemplate() : string {
+    public function forTemplate(): string
+    {
         $decorations = $this->config()->get('decorations');
         $font_sources = $this->config()->get('font_sources');
         $font_sources_value = '';
-        if(is_array($font_sources)) {
-            foreach($font_sources as $font_source) {
+        if (is_array($font_sources)) {
+            foreach ($font_sources as $font_source) {
                 $font_sources_value .= "@import url(\"{$font_source}\");\n";
             }
         }
@@ -125,7 +129,8 @@ CSS;
     /**
      * @return self
      */
-    public function setLayoutType(string $type) : self {
+    public function setLayoutType(string $type): self
+    {
         $this->layout_type = $type;
         return $this;
     }
@@ -134,7 +139,8 @@ CSS;
      * Called via Decorator.LayoutType
      * @return string
      */
-    public function getLayoutType() : string {
+    public function getLayoutType(): string
+    {
         return $this->layout_type;
     }
 
@@ -142,7 +148,8 @@ CSS;
      * Return a copyright string when $EmailDecorator.Copyright is called
      * @return string
      */
-    public function getCopyright() {
+    public function getCopyright()
+    {
         return _t('StructuredEmail.COPYRIGHT', 'Copyright © {year}', ['year' => date('Y') ]);
     }
 
@@ -151,9 +158,10 @@ CSS;
      * This is treated as HTML in the template
      * @return string
      */
-    public function getPhysicalAddress() {
+    public function getPhysicalAddress()
+    {
         $value = $this->config()->get('physical_address');
-        if($value) {
+        if ($value) {
             return DBField::create_field(
                 'HTMLFragment',
                 _t('StructuredEmail.PHYSICAL_ADDRESS', $value)
@@ -168,12 +176,13 @@ CSS;
      * Use the placeholder `SiteConfig.Title` to return the result of that method
      * @return string
      */
-    public function getMasthead() {
+    public function getMasthead()
+    {
         $value = $this->config()->get('masthead');
-        if($value == "SiteConfig.Title") {
+        if ($value == "SiteConfig.Title") {
             $config = SiteConfig::current_site_config();
             return $config ? $config->Title : '';
-        } else if($value) {
+        } elseif ($value) {
             return _t('StructuredEmail.MASTHEAD', $value);
         } else {
             return '';
@@ -185,9 +194,10 @@ CSS;
      * Use the placeholder `Director.absoluteBaseURL` to return the result of that method
      * @return string
      */
-    public function getMastheadLink() {
+    public function getMastheadLink()
+    {
         $value = $this->config()->get('masthead_link');
-        if($value == "Director.absoluteBaseURL") {
+        if ($value == "Director.absoluteBaseURL") {
             return Director::absoluteBaseURL();
         } else {
             return $value;
@@ -200,9 +210,10 @@ CSS;
      * This link is displayed as text at the bottom of the email
      * @return string
      */
-    public function getSignoffLink() {
+    public function getSignoffLink()
+    {
         $value = $this->config()->get('signoff_link');
-        if($value == "Director.absoluteBaseURL") {
+        if ($value == "Director.absoluteBaseURL") {
             return Director::absoluteBaseURL();
         } else {
             return $value;
@@ -213,9 +224,10 @@ CSS;
      * Return the masthead logo URL
      * @return string
      */
-    public function getMastheadLogo() {
+    public function getMastheadLogo()
+    {
         $value = $this->config()->get('masthead_logo');
-        if(!$value) {
+        if (!$value) {
             return '';
         }
         $value = $this->convertToResourceUrl($value);
@@ -226,9 +238,10 @@ CSS;
      * Return the content logo URL
      * @return string
      */
-    public function getContentLogo() {
+    public function getContentLogo()
+    {
         $value = $this->config()->get('content_logo');
-        if(!$value) {
+        if (!$value) {
             return '';
         }
         $value = $this->convertToResourceUrl($value);
@@ -239,9 +252,10 @@ CSS;
      * Convert parameter to a resource URL
      * @param string resourceOrURL - either a absolute URL or a resource understandable by urlForResource
      */
-    public function convertToResourceUrl($resourceOrURL) : string {
+    public function convertToResourceUrl($resourceOrURL): string
+    {
         $scheme = parse_url($resourceOrURL, PHP_URL_SCHEME);
-        if($scheme != '') {
+        if ($scheme != '') {
             // return the URL
             return $resourceOrURL;
         } else {
@@ -249,5 +263,4 @@ CSS;
             return Injector::inst()->get(ResourceURLGenerator::class)->urlForResource($resourceOrURL);
         }
     }
-
 }
