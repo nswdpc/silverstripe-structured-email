@@ -240,11 +240,11 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      * @inheritdoc
      * Override sending handling to render email into structured email template
      */
-    public function send()
+    public function send(): void
     {
         // Allow opt-out via configuration
         if (!$this->config()->get('is_structured')) {
-            return parent::send();
+            parent::send();
         }
 
         // Check template in use
@@ -258,18 +258,17 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         // render document
         $this->render();
 
-        // send
-        return Injector::inst()->get(Mailer::class)->send($this);
+        parent::send();
     }
 
     /**
      * @inheritdoc
      */
-    public function sendPlain()
+    public function sendPlain(): void
     {
         // Allow opt-out via configuration
         if (!$this->config()->get('is_structured')) {
-            return parent::sendPlain();
+            parent::sendPlain();
         }
 
         // render the email into the structured email template
@@ -279,7 +278,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         $this->render(true);
 
         // send
-        return Injector::inst()->get(Mailer::class)->send($this);
+        parent::sendPlain();
     }
 
     /**
