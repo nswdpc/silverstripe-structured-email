@@ -88,13 +88,13 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      * @inheritdoc
      */
     public function __construct(
-        $from = null,
-        $to = null,
-        $subject = null,
-        $body = null,
-        $cc = null,
-        $bcc = null,
-        $returnPath = null
+        string|array $from = '',
+        string|array $to = '',
+        string $subject = '',
+        string $body = '',
+        string|array $cc = '',
+        string|array $bcc = '',
+        string $returnPath = ''
     ) {
         parent::__construct($from, $to, $subject, $body, $cc, $bcc, $returnPath);
         // by default set this template
