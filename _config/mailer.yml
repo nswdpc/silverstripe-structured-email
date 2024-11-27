@@ -1,0 +1,6 @@
+---
+Name: nswdpc-structured-email-mailer
+---
+SilverStripe\Control\Email\MailerSubscriber:
+  extensions:
+    - 'NSWDPC\StructuredEmail\MailerSubscriberExtension'

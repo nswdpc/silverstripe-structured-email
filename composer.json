@@ -20,7 +20,8 @@
             "NSWDPC\\StructuredEmail\\": [
                 "src/Email/",
                 "src/Interfaces/",
-                "src/Traits/"
+                "src/Traits/",
+                "src/Services/"
             ],
             "NSWDPC\\StructuredEmail\\Tests\\": [
                 "tests/"
