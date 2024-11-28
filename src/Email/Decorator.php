@@ -2,6 +2,7 @@
 
 namespace NSWDPC\StructuredEmail;
 
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\View\ViewableData;
 
@@ -11,6 +12,8 @@ use SilverStripe\View\ViewableData;
 class Decorator extends AbstractDecorator
 {
     use Injectable;
+
+    use Configurable;
 
     private static string $type = 'basic';
 

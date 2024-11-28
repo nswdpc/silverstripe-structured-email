@@ -4,55 +4,36 @@ namespace NSWDPC\StructuredEmail;
 
 use League\HTMLToMarkdown\HtmlConverter;
 use League\HTMLToMarkdown\Converter\TableConverter;
-use NSWDPC\Messaging\Taggable\TaggableEmail;
 use SilverStripe\Control\Email\Email;
-use SilverStripe\Control\Email\Mailer;
 use SilverStripe\Control\HTTP;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\ViewableData;
 use SilverStripe\View\Requirements;
+use SilverStripe\View\ViewableData;
 use Spatie\SchemaOrg\Schema;
 use Spatie\SchemaOrg\Action;
 use Spatie\SchemaOrg\Contracts\ActionContract;
 
 /**
- * Provides a more structured/restricted way to send emails out of a Silverstripe instance
- * Email content will be pre-processed and rendered into the StructuredEmail template
- *
- * Custom parameters:
- * StructuredEmail supports custom parameters
- * but it is up to your configured transport to handle the custom parameters
- * e.g if custom parameters are added as mail headers, these can be added at the
- * onMessage event of a EventSubscriberInterface
- *
- * EmailSchema
- * StructuredEmail has basic EmailMessage schema.org support.
- * See getEmailSchema. setAction/getAction provide the ability to set a potentialAction
- *
- * PreHeader
- * Use setPreHeader to apply preheader text to your emails
- * See: https://postmarkapp.com/support/article/1220-adding-preheader-text-to-your-messages
+ * Trait a {@link \SilverStripe\Control\Email\Email} subclass can use
+ * to provide processing via Structured Emails
  *
  * @author James
  *
  */
-class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
+class StructuredEmailProcessor extends ViewableData
 {
-    /**
-     * Allow configuration via API
-     */
+
+    use Injectable;
+
     use Configurable;
 
     /**
-     * Custom parameters for the mailer, if it is supported
+     * Allow projects to opt out of structured email processing
      */
-    use CustomParameters;
-
     private static bool $is_structured = true;
 
     /**
@@ -71,41 +52,60 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
     public const HTML_CLEANER_TIDY = 'tidy';
 
     /**
+     * The email decorator, which holds style rules
+     */
+    protected ?\NSWDPC\StructuredEmail\AbstractDecorator $decorator = null;
+
+    /**
+     * The default structured email template
+     */
+    private static string $email_template = "NSWDPC/StructuredEmail/StructuredEmail";
+
+    /**
      * Used to retrieve the contents of a <body> from provided templates
      * The default HTML document cleaner is tidy
      * if not found or installed, strip_tags will be used
      */
     private static string $html_cleaner = self::HTML_CLEANER_TIDY;
 
-    private ?\NSWDPC\StructuredEmail\AbstractDecorator $decorator = null;
-
-    private string $email_template = "NSWDPC/StructuredEmail/StructuredEmail";
-
     /**
      * @var string
      */
-    protected $pre_header = '';
+    protected string $preHeader = '';
 
     /**
      * @var ActionContract|null
      */
-    protected $email_message_action;
+    protected ?ActionContract $emailMessageAction = null;
 
     /**
-     * @inheritdoc
+     * @var \SilverStripe\Control\Email\Email $email
      */
-    public function __construct(
-        string|array $from = '',
-        string|array $to = '',
-        string $subject = '',
-        string $body = '',
-        string|array $cc = '',
-        string|array $bcc = '',
-        string $returnPath = ''
-    ) {
-        parent::__construct($from, $to, $subject, $body, $cc, $bcc, $returnPath);
-        // by default set this template
-        parent::setHTMLTemplate($this->email_template);
+    protected ?\SilverStripe\Control\Email\Email  $email = null;
+
+    public function __construct(\SilverStripe\Control\Email\Email $email) {
+        $this->email = $email;
+    }
+
+    /**
+     * This class representation in a template is an empty string
+     */
+    public function forTemplate() {
+        return '';
+    }
+
+    /**
+     * return the configured email template, or the default if not set
+     */
+    public static function getEmailTemplate(): string {
+        return static::config()->get('email_template') ?? "NSWDPC/StructuredEmail/StructuredEmail";
+    }
+
+    /**
+     * Return the Email instance
+     */
+    public function getEmail(): \SilverStripe\Control\Email\Email {
+        return $this->email;
     }
 
     /**
@@ -137,18 +137,18 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             Requirements::clear();
 
             // Allow opt-out via configuration
-            if(!$this->config()->get('is_structured')) {
+            if(!static::config()->get('is_structured')) {
                 return $this;
             }
 
             // The original HTML template for the email
-            $htmlTemplate = $this->getHTMLTemplate();
+            $htmlTemplate = $this->email->getHTMLTemplate();
 
             // Apply the preheaderer
             $this->applyPreheader($htmlTemplate);
 
             /** @var resource|string|null $html an existing body of the email */
-            $html = $this->getHtmlBody();
+            $html = $this->email->getHtmlBody();
             /**
              * clean the HTML, removing everything that cannot go in a body tag
              * the structured email template renders the cleaned html into
@@ -157,28 +157,28 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             $cleanedHtml = $this->cleanHTMLDocument($html);
 
             // email data
-            $data = $this->getData();
+            $data = $this->email->getData();
 
             // override this email's data with the rendered template
-            $this->addData('Body', $cleanedHtml);
+            $this->email->addData('Body', $cleanedHtml);
 
             // add the Email decorator
-            $this->addData('EmailDecorator', $this->getDecorator());
+            $this->email->addData('EmailDecorator', $this->getDecorator());
 
             // add the EmailSchema
-            $this->addData('EmailSchema', $this->getEmailSchema());
+            $this->email->addData('EmailSchema', $this->getEmailSchema());
 
             // ensure a preheader is set, even if an empty string but if not already set
             if ((is_array($data) && !isset($data['Preheader']))
                 || (($data instanceof ViewableData) && !$data->hasField('Preheader'))) {
-                $this->addData('Preheader', $this->getPreheader());
+                $this->email->addData('Preheader', $this->getPreheader());
             }
 
             // update HTML of email by rendering it into the StructuredEmail template
-            $this->setHTMLTemplate($this->email_template);
-            $renderedHtml = HTTP::absoluteURLs($this->getData()->renderWith($this->email_template)->RAW());
+            $this->email->setHTMLTemplate(static::getEmailTemplate());
+            $renderedHtml = HTTP::absoluteURLs($this->email->getData()->renderWith(static::getEmailTemplate())->RAW());
             // print "<pre>";print htmlspecialchars($renderedHtml);print "</pre>";exit;
-            $this->html($renderedHtml);
+            $this->email->html($renderedHtml);
 
             try {
                 // update text body of email, the HTML is converted to markdown
@@ -191,7 +191,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                 // $bodyPart = HTTP::absoluteURLs($bodyPart);
                 $markdown = $converter->convert($cleanedHtml);
                 // set the text part of the email
-                $this->text($markdown);
+                $this->email->text($markdown);
             } catch (\Exception) {
                 // failed to convert!
             }
@@ -231,7 +231,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
                 return $html;
             }
 
-            $cleaner = $this->config()->get('html_cleaner');
+            $cleaner = $this->email->config()->get('html_cleaner');
 
             if ($cleaner == self::HTML_CLEANER_DOMDOCUMENT) {
                 if (class_exists('DOMDocument')) {
@@ -334,7 +334,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      */
     public function setPreHeader(string $value): self
     {
-        $this->pre_header = $value;
+        $this->preHeader = $value;
         return $this;
     }
 
@@ -343,11 +343,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      */
     public function getPreheader(): string
     {
-        if ($this->pre_header) {
-            return _t('StructuredEmail.PREHEADER', $this->pre_header);
-        } else {
-            return '';
-        }
+        return $this->preHeader;
     }
 
     /**
@@ -363,7 +359,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
             $emailMessage = Schema::emailMessage();
 
             // about
-            if ($subject = $this->getSubject()) {
+            if ($subject = $this->email->getSubject()) {
                 $emailMessage->about(Schema::thing()->name($subject));
             }
 
@@ -396,7 +392,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      */
     public function getAction(): ?ActionContract
     {
-        return $this->email_message_action;
+        return $this->emailMessageAction;
     }
 
     /**
@@ -405,7 +401,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
      */
     public function setAction(?ActionContract $action): static
     {
-        $this->email_message_action = $action;
+        $this->emailMessageAction = $action;
         return $this;
     }
 
@@ -417,7 +413,7 @@ class StructuredEmail extends TaggableEmail implements EmailWithCustomParameters
         $action = Schema::viewAction()
             ->name($name)
             ->url($url);
-        $this->email_message_action = $action;
+        $this->emailMessageAction = $action;
         return $this;
     }
 }

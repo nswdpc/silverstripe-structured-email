@@ -2,7 +2,8 @@
 
 namespace NSWDPC\StructuredEmail\Tests;
 
-use NSWDPC\StructuredEmail\StructuredEmail;
+use NSWDPC\StructuredEmail\StructuredEmailProcessor;
+use SilverStripe\Control\Email\Email;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
@@ -15,7 +16,7 @@ class EmailTemplateTest extends SapphireTest
         Member::class => '*',
     ];
 
-    protected $usesDatabase;
+    protected $usesDatabase = false;
 
     private function saveOutput($html, string $template, string $ext = ".html")
     {
@@ -23,6 +24,20 @@ class EmailTemplateTest extends SapphireTest
         $path = dirname($full);
         @mkdir($path, 0700, true);
         file_put_contents($full . $ext, $html);
+    }
+
+    public function testStructuredEmailProcessor() {
+        $email = Email::create();
+        $expected = 'test pre header';
+        $processor = StructuredEmailProcessor::create($email);
+        $processor->setPreHeader($expected);
+        $email->addData('StructuredEmailProcessor', $processor);
+        $this->assertEquals($expected, $email->getData()->StructuredEmailProcessor->getPreheader());
+    }
+
+    public function testNoStructuredEmailProcessor() {
+        $email = Email::create();
+        $this->assertNull($email->getData()->StructuredEmailProcessor);
     }
 
     public function testTemplate(): void
@@ -33,23 +48,27 @@ class EmailTemplateTest extends SapphireTest
 
         $subject = 'Welcome to the show';
 
-        $email = StructuredEmail::create();
+        $email = Email::create();
         $email->setTo("to@example.com");
         $email->setCc("cc@example.com");
         $email->setBcc("bcc@example.com");
         $email->setFrom(["from@example.com" => "Jiminy Crickets", "another@example.com" => "Bob Pokemon"]);
         $email->addFrom("secondary@example.com");
         $email->setSubject($subject);
-        $email->setPreheader('Test generic email that needs your attention');
         $email->setData($data);
-        $email->setViewAction('Confirm your identify', 'https://confirm.example.com?token=suitably-long-token');
-        $email->Send();
 
-        $html = $email->getBody();
+        $processor = StructuredEmailProcessor::create($email);
+        $processor->setPreheader('Test generic email that needs your attention');
+        $processor->setViewAction('Confirm your identify', 'https://confirm.example.com?token=suitably-long-token');
+        $email->addData('StructuredEmailProcessor', $processor);
+
+        $email->send();
+
+        $html = $email->getHtmlBody();
 
         $this->saveOutput($html, "StructuredEmail");
 
-        $message = $email->getSwiftMessage();
+        $message = $email->toString();
         $this->saveOutput($message, "StructuredEmail", ".txt");
 
 
@@ -75,24 +94,19 @@ class EmailTemplateTest extends SapphireTest
             "Your password reset link",
             'Email subject'
         );
-        /** @var StructuredEmail $email */
-        $email = StructuredEmail::create()
+        $email = Email::create()
             ->setHTMLTemplate($template)
             ->setData($member)
             ->setSubject($subject)
             ->addData('PasswordResetLink', $resetPasswordLink)
             ->setTo($member->Email);
-        // test preheader
-        $email->setPreHeader(
-            'Your password reset link'
-        );
         $email->send();
 
-        $html = $email->getBody();
+        $html = $email->getHtmlBody();
 
         $this->saveOutput($html, "ForgotPasswordEmail");
 
-        $message = $email->getSwiftMessage();
+        $message = $email->toString();
         $this->saveOutput($message, "ForgotPasswordEmail", ".txt");
 
         // test that email is rendered with reset link and in structured email
@@ -116,7 +130,7 @@ class EmailTemplateTest extends SapphireTest
             "Your password has been changed",
             'Email subject'
         );
-        $email = StructuredEmail::create()
+        $email = Email::create()
             ->setHTMLTemplate('SilverStripe\\Control\\Email\\ChangePasswordEmail')
             ->setData($member)
             ->setTo($member->Email)
@@ -124,9 +138,9 @@ class EmailTemplateTest extends SapphireTest
             ->setSubject($subject);
         $email->send();
 
-        $this->saveOutput($email->getBody(), "ChangePasswordEmail");
+        $this->saveOutput($email->getHtmlBody(), "ChangePasswordEmail");
 
-        $message = $email->getSwiftMessage();
+        $message = $email->toString();
         $this->saveOutput($message, "ChangePasswordEmail", ".txt");
 
         // assert email contains subject
@@ -140,20 +154,19 @@ class EmailTemplateTest extends SapphireTest
     {
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
         $subject = 'Subject of an important message';
-        $email = StructuredEmail::create()
+        $email = Email::create()
             ->setHTMLTemplate(\SilverStripe\Control\Email\Email::class)
             ->setData([
                 'EmailContent' => file_get_contents(__DIR__ . '/data/template.html')
             ])
-            ->setPreHeader('An important message')
             ->setTo($member->Email)
             ->setFrom('from@example.com')
             ->setSubject($subject);
         $email->send();
 
-        $this->saveOutput($email->getBody(), "StandardEmail");
+        $this->saveOutput($email->getHtmlBody(), "StandardEmail");
 
-        $message = $email->getSwiftMessage();
+        $message = $email->toString();
         $this->saveOutput($message, "StandardEmail", ".txt");
 
         // assert email contains subject

@@ -4,24 +4,30 @@ The StructuredEmail class supports [Schema.org EmailMessage](https://schema.org/
 
 ## Actions
 
-Schema.org supports actions in EmailMessage.
-
 Some actions require you to be registered with an email provider. Using actions may result in no changes to how your email is rendered at the recipient's end.
 
 Reference (gmail): https://developers.google.com/gmail/markup/reference/go-to-action
 
-### ViewAction
+By default, no Actions is set in the EmailMessage schema added to an HTML email.
 
-A common type of action is the `view action`:
+## Add an action
+
+Add a ViewAction to an email:
 
 ```php
 <?php
-/* @var StructuredEmail */
-$email->setViewAction(
-    'Confirm your identify',
-    'https://confirm.example.com?token=suitably-long-token'
-);
+// create an email
+$email = Email::create();
+// create a processor instance, with the email as the argument
+$processor = StructuredEmailProcessor::create($email);
+$processor->setViewAction('Confirm your identify', 'https://confirm.example.com?token=some-token-for-the-recipient');
+// attach this processor as data to its email
+$email->setData('StructuredEmailProcessor', $processor);
+// other email actions
+// ...
+$email->send();
 ```
+
 Internally, a `\Spatie\SchemaOrg\ViewAction` will be created using the name and URL provided.
 
 This will result in the following HTML snippet in the template:
@@ -45,8 +51,6 @@ This will result in the following HTML snippet in the template:
 </script>
 ```
 
-## Action
-
 You can also define a generic action:
 
 ```php
@@ -60,8 +64,9 @@ $action = Schema::action()
             "url" => "https://action.example.com?action=1234"
         ]
     );
-/* @var StructuredEmail */
-$email->setAction($action);
+
+// similar to the view action, but call setAction
+$processor->setAction($action);
 ```
 
 Using your own Actions is possible eg. SaveAction. It must implement the [ActionContract](https://github.com/spatie/schema-org/blob/master/src/Contracts/ActionContract.php)

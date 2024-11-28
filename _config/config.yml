@@ -1,5 +1,11 @@
 ---
 Name: nswdpc-structured-email
 ---
-NSWDPC\StructuredEmail\StructuredEmail:
+NSWDPC\StructuredEmail\StructuredEmailProcessor:
   is_structured: true
+---
+Name: nswdpc-structured-email-mailer
+---
+SilverStripe\Control\Email\MailerSubscriber:
+  extensions:
+    - 'NSWDPC\StructuredEmail\MailerSubscriberExtension'
