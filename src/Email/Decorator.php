@@ -8,20 +8,13 @@ use SilverStripe\View\ViewableData;
 /**
  * Standard decorator for inlining styles into emails
  */
-class Decorator extends AbstractDecorator {
-
-
+class Decorator extends AbstractDecorator
+{
     use Injectable;
 
-    /**
-     * @var string
-     */
-    private static $type = 'basic';
+    private static string $type = 'basic';
 
-    /**
-     * @var array
-     */
-    private static $decorations = [
+    private static array $decorations = [
         'FontFamily' => "-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif",
         'FontSize' => '16px',
         'BodyBackgroundColor' => '#F2F4F6',
@@ -39,10 +32,5 @@ class Decorator extends AbstractDecorator {
         'DarkModeButtonColor' => '#002664'
     ];
 
-    /**
-     * @var array
-     */
-    private static $font_sources = [];
-
-
+    private static array $font_sources = [];
 }

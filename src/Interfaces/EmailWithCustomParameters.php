@@ -10,22 +10,17 @@ namespace NSWDPC\StructuredEmail;
  *
  * @author James
  */
-interface EmailWithCustomParameters {
-
+interface EmailWithCustomParameters
+{
     /**
-     * @param array $args
      * @return self
      */
     public function setCustomParameters(array $args);
 
-    /**
-     * @return array
-     */
-    public function getCustomParameters() : array;
+    public function getCustomParameters(): array;
 
     /**
      * @return self
      */
     public function clearCustomParameters();
-
 }

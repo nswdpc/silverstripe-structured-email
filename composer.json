@@ -12,10 +12,21 @@
     "authors": [
         {
             "name": "James",
-            "homepage": "https://dpc.nsw.gov.au",
             "role": "Developer"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "NSWDPC\\StructuredEmail\\": [
+                "src/Email/",
+                "src/Interfaces/",
+                "src/Traits/"
+            ],
+            "NSWDPC\\StructuredEmail\\Tests\\": [
+                "tests/"
+            ]
+        }
+    },
     "require": {
         "silverstripe/framework": "^4.10",
         "league/html-to-markdown": "^5",
@@ -27,8 +38,25 @@
         "ext-tidy": "Use tidy to process HTML documents"
     },
     "require-dev": {
+        "cambis/silverstripe-rector": "^0.5.1",
         "phpunit/phpunit": "^9.5",
-        "friendsofphp/php-cs-fixer": "^3",
-        "silverstripe/sqlite3": "^2"
+        "syntro/silverstripe-phpstan": "^1",
+        "nswdpc/ci-files": "dev-v-1"
+    },
+    "repositories": [
+        {
+        "type": "git",
+        "url": "https://github.com/nswdpc/ci-files.git"
+        }
+    ],
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "silverstripe/vendor-plugin": true,
+            "silverstripe/recipe-plugin": true,
+            "phpstan/extension-installer": true
+        }
     }
 }
