@@ -26,17 +26,18 @@ class EmailTemplateTest extends SapphireTest
         file_put_contents($full . $ext, $html);
     }
 
-    public function testStructuredEmailProcessor()
+    public function testStructuredEmailProcessor(): void
     {
         $email = Email::create();
         $expected = 'test pre header';
         $processor = StructuredEmailProcessor::create($email);
         $processor->setPreHeader($expected);
+
         $email->addData('StructuredEmailProcessor', $processor);
         $this->assertEquals($expected, $email->getData()->StructuredEmailProcessor->getPreheader());
     }
 
-    public function testNoStructuredEmailProcessor()
+    public function testNoStructuredEmailProcessor(): void
     {
         $email = Email::create();
         $this->assertNull($email->getData()->StructuredEmailProcessor);
@@ -62,6 +63,7 @@ class EmailTemplateTest extends SapphireTest
         $processor = StructuredEmailProcessor::create($email);
         $processor->setPreheader('Test generic email that needs your attention');
         $processor->setViewAction('Confirm your identify', 'https://confirm.example.com?token=suitably-long-token');
+
         $email->addData('StructuredEmailProcessor', $processor);
 
         $email->send();

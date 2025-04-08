@@ -13,6 +13,7 @@ use Symfony\Component\Mailer\Event\MessageEvent;
  * the Structured email templates via renderIntoStructuredEmail
  *
  * This extension is automatically enabled when the module is installed
+ * @extends \SilverStripe\Core\Extension<(\SilverStripe\Control\Email\MailerSubscriber & static)>
  */
 class MailerSubscriberExtension extends Extension
 {
@@ -25,6 +26,7 @@ class MailerSubscriberExtension extends Extension
                 // use the default if not set
                 $processor = StructuredEmailProcessor::create($email);
             }
+
             $processor->renderIntoStructuredEmail();
         }
     }

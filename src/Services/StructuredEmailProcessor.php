@@ -67,30 +67,18 @@ class StructuredEmailProcessor extends ViewableData
      */
     private static string $html_cleaner = self::HTML_CLEANER_TIDY;
 
-    /**
-     * @var string
-     */
     protected string $preHeader = '';
 
-    /**
-     * @var ActionContract|null
-     */
     protected ?ActionContract $emailMessageAction = null;
 
-    /**
-     * @var \SilverStripe\Control\Email\Email $email
-     */
-    protected ?\SilverStripe\Control\Email\Email  $email = null;
-
-    public function __construct(\SilverStripe\Control\Email\Email $email)
+    public function __construct(protected ?\SilverStripe\Control\Email\Email $email)
     {
-        $this->email = $email;
     }
 
     /**
      * This class representation in a template is an empty string
      */
-    public function forTemplate()
+    public function forTemplate(): string
     {
         return '';
     }
@@ -201,7 +189,7 @@ class StructuredEmailProcessor extends ViewableData
 
             return $this;
 
-        } catch (\Exception $e) {
+        } catch (\Exception) {
 
         } finally {
             Requirements::restore();
@@ -362,7 +350,7 @@ class StructuredEmailProcessor extends ViewableData
             $emailMessage = Schema::emailMessage();
 
             // about
-            if ($subject = $this->email->getSubject()) {
+            if (($subject = $this->email->getSubject()) !== null && ($subject = $this->email->getSubject()) !== '') {
                 $emailMessage->about(Schema::thing()->name($subject));
             }
 
