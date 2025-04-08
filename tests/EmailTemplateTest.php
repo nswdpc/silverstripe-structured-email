@@ -91,7 +91,6 @@ class EmailTemplateTest extends SapphireTest
         $template = 'SilverStripe/Control/Email/ForgotPasswordEmail';
         $token = "really-bad-token";
         $member = $this->objFromFixture(Member::class, 'forgotpassword');
-        /** @phpstan-ignore argument.type */
         $resetPasswordLink = Security::getPasswordResetLink($member, $token);
         $subject = _t(
             'SilverStripe\\Security\\Member.SUBJECTPASSWORDRESET',
