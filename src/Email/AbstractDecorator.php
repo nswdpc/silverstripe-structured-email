@@ -59,6 +59,7 @@ abstract class AbstractDecorator extends ViewableData
     /**
      * @inheritdoc
      */
+    #[\Override]
     public function getField($field)
     {
         return $this->getDecoration($field);
@@ -67,6 +68,7 @@ abstract class AbstractDecorator extends ViewableData
     /**
      * @inheritdoc
      */
+    #[\Override]
     public function hasField($field)
     {
         $this->getDecorations();

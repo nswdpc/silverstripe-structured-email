@@ -26,7 +26,6 @@ use Spatie\SchemaOrg\Contracts\ActionContract;
  */
 class StructuredEmailProcessor extends ViewableData
 {
-
     use Injectable;
 
     use Configurable;
@@ -68,43 +67,35 @@ class StructuredEmailProcessor extends ViewableData
      */
     private static string $html_cleaner = self::HTML_CLEANER_TIDY;
 
-    /**
-     * @var string
-     */
     protected string $preHeader = '';
 
-    /**
-     * @var ActionContract|null
-     */
     protected ?ActionContract $emailMessageAction = null;
 
-    /**
-     * @var \SilverStripe\Control\Email\Email $email
-     */
-    protected ?\SilverStripe\Control\Email\Email  $email = null;
-
-    public function __construct(\SilverStripe\Control\Email\Email $email) {
-        $this->email = $email;
+    public function __construct(protected ?\SilverStripe\Control\Email\Email $email)
+    {
     }
 
     /**
      * This class representation in a template is an empty string
      */
-    public function forTemplate() {
+    public function forTemplate(): string
+    {
         return '';
     }
 
     /**
      * return the configured email template, or the default if not set
      */
-    public static function getEmailTemplate(): string {
+    public static function getEmailTemplate(): string
+    {
         return static::config()->get('email_template') ?? "NSWDPC/StructuredEmail/StructuredEmail";
     }
 
     /**
      * Return the Email instance
      */
-    public function getEmail(): \SilverStripe\Control\Email\Email {
+    public function getEmail(): \SilverStripe\Control\Email\Email
+    {
         return $this->email;
     }
 
@@ -137,7 +128,7 @@ class StructuredEmailProcessor extends ViewableData
             Requirements::clear();
 
             // Allow opt-out via configuration
-            if(!static::config()->get('is_structured')) {
+            if (!static::config()->get('is_structured')) {
                 return $this;
             }
 
@@ -169,8 +160,7 @@ class StructuredEmailProcessor extends ViewableData
             $this->email->addData('EmailSchema', $this->getEmailSchema());
 
             // ensure a preheader is set, even if an empty string but if not already set
-            if ((is_array($data) && !isset($data['Preheader']))
-                || (($data instanceof ViewableData) && !$data->hasField('Preheader'))) {
+            if (!$data->hasField('Preheader')) {
                 $this->email->addData('Preheader', $this->getPreheader());
             }
 
@@ -198,11 +188,13 @@ class StructuredEmailProcessor extends ViewableData
 
             return $this;
 
-        } catch (\Exception $e) {
+        } catch (\Exception) {
 
         } finally {
             Requirements::restore();
         }
+
+        return $this;
 
     }
 
@@ -214,11 +206,11 @@ class StructuredEmailProcessor extends ViewableData
     {
         try {
 
-            if(is_null($html)) {
+            if (is_null($html)) {
                 return "";
             }
 
-            if(is_resource($html)) {
+            if (is_resource($html)) {
                 // at the moment, not handling resource
                 return "";
             }
@@ -238,7 +230,7 @@ class StructuredEmailProcessor extends ViewableData
                     // Use DOMDocument to strip out everything but the contents of <body>
                     libxml_use_internal_errors(true);
                     $dom = new \DOMDocument();
-                    $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD);
+                    $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                     /* @var \DOMNode */
                     $body = $dom->getElementsByTagName('body')->item(0);
                     if (!$body instanceof \DOMNode) {
@@ -273,7 +265,7 @@ class StructuredEmailProcessor extends ViewableData
                             'tab-size' => 4,
                             'show-body-only' => true,
                             'output-encoding' => 'utf-8',
-                            'input-encoding'=> 'utf-8',
+                            'input-encoding' => 'utf-8',
                             'output-bom' => false
                         ],
                         'utf8'
@@ -359,7 +351,8 @@ class StructuredEmailProcessor extends ViewableData
             $emailMessage = Schema::emailMessage();
 
             // about
-            if ($subject = $this->email->getSubject()) {
+            $subject = $this->email->getSubject();
+            if (is_string($subject) && $subject !== '') {
                 $emailMessage->about(Schema::thing()->name($subject));
             }
 
