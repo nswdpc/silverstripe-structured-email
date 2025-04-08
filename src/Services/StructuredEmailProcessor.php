@@ -26,7 +26,6 @@ use Spatie\SchemaOrg\Contracts\ActionContract;
  */
 class StructuredEmailProcessor extends ViewableData
 {
-
     use Injectable;
 
     use Configurable;
@@ -83,28 +82,32 @@ class StructuredEmailProcessor extends ViewableData
      */
     protected ?\SilverStripe\Control\Email\Email  $email = null;
 
-    public function __construct(\SilverStripe\Control\Email\Email $email) {
+    public function __construct(\SilverStripe\Control\Email\Email $email)
+    {
         $this->email = $email;
     }
 
     /**
      * This class representation in a template is an empty string
      */
-    public function forTemplate() {
+    public function forTemplate()
+    {
         return '';
     }
 
     /**
      * return the configured email template, or the default if not set
      */
-    public static function getEmailTemplate(): string {
+    public static function getEmailTemplate(): string
+    {
         return static::config()->get('email_template') ?? "NSWDPC/StructuredEmail/StructuredEmail";
     }
 
     /**
      * Return the Email instance
      */
-    public function getEmail(): \SilverStripe\Control\Email\Email {
+    public function getEmail(): \SilverStripe\Control\Email\Email
+    {
         return $this->email;
     }
 
@@ -137,7 +140,7 @@ class StructuredEmailProcessor extends ViewableData
             Requirements::clear();
 
             // Allow opt-out via configuration
-            if(!static::config()->get('is_structured')) {
+            if (!static::config()->get('is_structured')) {
                 return $this;
             }
 
@@ -214,11 +217,11 @@ class StructuredEmailProcessor extends ViewableData
     {
         try {
 
-            if(is_null($html)) {
+            if (is_null($html)) {
                 return "";
             }
 
-            if(is_resource($html)) {
+            if (is_resource($html)) {
                 // at the moment, not handling resource
                 return "";
             }
@@ -238,7 +241,7 @@ class StructuredEmailProcessor extends ViewableData
                     // Use DOMDocument to strip out everything but the contents of <body>
                     libxml_use_internal_errors(true);
                     $dom = new \DOMDocument();
-                    $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED|LIBXML_HTML_NODEFDTD);
+                    $dom->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                     /* @var \DOMNode */
                     $body = $dom->getElementsByTagName('body')->item(0);
                     if (!$body instanceof \DOMNode) {
@@ -273,7 +276,7 @@ class StructuredEmailProcessor extends ViewableData
                             'tab-size' => 4,
                             'show-body-only' => true,
                             'output-encoding' => 'utf-8',
-                            'input-encoding'=> 'utf-8',
+                            'input-encoding' => 'utf-8',
                             'output-bom' => false
                         ],
                         'utf8'

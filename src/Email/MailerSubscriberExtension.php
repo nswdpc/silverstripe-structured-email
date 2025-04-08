@@ -16,13 +16,12 @@ use Symfony\Component\Mailer\Event\MessageEvent;
  */
 class MailerSubscriberExtension extends Extension
 {
-
     public function updateOnMessage(Email $email, MessageEvent $event)
     {
-        if(Config::inst()->get(StructuredEmailProcessor::class, 'is_structured')) {
+        if (Config::inst()->get(StructuredEmailProcessor::class, 'is_structured')) {
             $data = $email->getData();
             $processor = $data->StructuredEmailProcessor ?? null;
-            if(!$processor) {
+            if (!$processor) {
                 // use the default if not set
                 $processor = StructuredEmailProcessor::create($email);
             }

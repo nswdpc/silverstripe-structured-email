@@ -26,7 +26,8 @@ class EmailTemplateTest extends SapphireTest
         file_put_contents($full . $ext, $html);
     }
 
-    public function testStructuredEmailProcessor() {
+    public function testStructuredEmailProcessor()
+    {
         $email = Email::create();
         $expected = 'test pre header';
         $processor = StructuredEmailProcessor::create($email);
@@ -35,7 +36,8 @@ class EmailTemplateTest extends SapphireTest
         $this->assertEquals($expected, $email->getData()->StructuredEmailProcessor->getPreheader());
     }
 
-    public function testNoStructuredEmailProcessor() {
+    public function testNoStructuredEmailProcessor()
+    {
         $email = Email::create();
         $this->assertNull($email->getData()->StructuredEmailProcessor);
     }
