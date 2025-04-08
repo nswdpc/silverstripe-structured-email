@@ -160,8 +160,7 @@ class StructuredEmailProcessor extends ViewableData
             $this->email->addData('EmailSchema', $this->getEmailSchema());
 
             // ensure a preheader is set, even if an empty string but if not already set
-            if ((is_array($data) && !isset($data['Preheader']))
-                || (($data instanceof ViewableData) && !$data->hasField('Preheader'))) {
+            if (!$data->hasField('Preheader')) {
                 $this->email->addData('Preheader', $this->getPreheader());
             }
 
