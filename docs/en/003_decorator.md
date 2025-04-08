@@ -1,17 +1,23 @@
 ### Decorating emails
 
-A decorator allows you to set CSS values in the template
+A decorator allows you to set CSS values in the template via configuration API.
 
-By default the `NSWDPC\StructuredEmail\Decorator` class is used but you can provide your own decorator
+```yml
+NSWDPC\StructuredEmail\Decorator:
+  decorations:
+    BackgroundColor: '#eeeeee'
+```
+
+You can also provide your own decorator that extends the default decorator:
 
 ```php
 <?php
 namespace Some\Project;
 
-use NSWDPC\StructuredEmail\AbstractDecorator;
+use NSWDPC\StructuredEmail\Decorator;
 
-class MyDecorator extends AbstractDecorator {
-    
+class MyDecorator extends Decorator {
+
     /**
      * @var string
      */
@@ -36,15 +42,7 @@ class MyDecorator extends AbstractDecorator {
 }
 ```
 
-Then create it:
-
-```php
-<?php
-$decorator = new MyDecorator();
-$email->setDecorator($decorator)->send();
-```
-
-You can also inject your own decorator over `NSWDPC\StructuredEmail\Decorator`
+Then inject your own decorator in place of `NSWDPC\StructuredEmail\Decorator` using Injector configuration.
 
 ```yaml
 ---
@@ -55,26 +53,36 @@ SilverStripe\Core\Injector\Injector:
     class: Some\Project\MyDecorator
 ```
 
-```php
-<?php
-use NSWDPC\StructuredEmail\Decorator;
-use SilverStripe\Core\Injector\Injector;
-
-$decorator = Injector::inst()->create(Decorator::class);
-print get_class($decorator);
-// Some\Project\MyDecorator
-```
-
 ### Set the layout type
 
 A layout type allows you some control over the HTML width ([more](https://github.com/ActiveCampaign/mailmason/wiki/Project-Structure#layouts))
 
 + basic-full = full width
 + basic = single centred column
-+ plain = similar to basic but less decorations 
++ plain = similar to basic but less decorations
+
+Set a layout type via Injector:
+
+```yaml
+---
+Name: 'project-emails-layout'
+---
+SilverStripe\Core\Injector\Injector:
+  Some\Project\MyDecorator:
+    properties:
+      LayoutType: 'basic'
+```
+
+These changes will affect all emails. To set a Decorator per email:
 
 ```php
 <?php
-$decorator->setLayoutType('basic-full');
-$email->setDecorator($decorator)->send();
+// create an email
+$email = Email::create();
+// create a processor instance, with the email as the argument
+$processor = StructuredEmailProcessor::create($email);
+// $decorator created previously for this email
+$processor->setDecorator($decorator);
+// attach this processor as data to its email
+$email->setData('StructuredEmailProcessor', $processor);
 ```

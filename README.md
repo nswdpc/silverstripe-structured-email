@@ -1,8 +1,6 @@
 ## Structured email handling for Silverstripe
 
-The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)). The templates used are based on the [Postmark Transactional Email Templates](https://github.com/ActiveCampaign/postmark-templates).
-
-The `StructuredEmail` class extends the `Email` class. You can use it standalone or you may wish to inject StructuredEmail as the Email class for your project using `Injector`.
+The goal of this module is to produce simple and easy-to-digest emails ([more](./docs/en/001_index.md)) using a consistent template. The templates used are based on the [Postmark Transactional Email Templates](https://github.com/ActiveCampaign/postmark-templates).
 
 For specific core emails, it will attempt to detect the purpose of the email based on the template name:
 
@@ -29,32 +27,14 @@ If the class encounters a complete HTML document in the email, it will use HTML 
 + E-mail support across clients: https://www.caniemail.com
 + Postmark templates: https://github.com/ActiveCampaign/postmark-templates
 
-## Quick example
+## Usage
 
-For finer grain control, use `StructuredEmail` directly.
+1. Create emails in the standard way
+2. The MailerSubscriber extension will catch emails prior to being sent
+3. Email content is updated based on the default template and decorator provided
+4. Emails will then be sent out with the updated template and a plain text part
 
-See [further documentation](./docs/en/001_index.md)
-```php
-<?php
-// Your custom HTML body
-$html = ArrayData::create([
-    'Name' => $name,
-    'CallToAction' => $link
-])->renderWith('My/Template');
-
-$data = [
-    'Body' => $html// Your email HTML
-];
-
-$email = StructuredEmail::create();
-$email->setTo(["to@example.com", "To name"]);
-$email->setFrom(["from@example.com" => "From name"]);
-$email->setData($data);
-// will automatically pick up StructuredEmail.ss as the template
-$email->send();
-```
-
-Emails are decorated using a standard, basic colour palette from the NSW Design System. [You can provide your own decorator](./docs/en/003_decorator.md).
+[More documentation](./docs/en/001_index.md)
 
 ## Installation
 

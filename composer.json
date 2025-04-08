@@ -20,7 +20,8 @@
             "NSWDPC\\StructuredEmail\\": [
                 "src/Email/",
                 "src/Interfaces/",
-                "src/Traits/"
+                "src/Traits/",
+                "src/Services/"
             ],
             "NSWDPC\\StructuredEmail\\Tests\\": [
                 "tests/"
@@ -28,20 +29,20 @@
         }
     },
     "require": {
-        "silverstripe/framework": "^4.10",
+        "silverstripe/framework": "^5",
         "league/html-to-markdown": "^5",
         "spatie/schema-org": "^3.5",
-        "nswdpc/silverstripe-taggable-notifications": "^0.3"
+        "nswdpc/silverstripe-taggable-notifications": "^1"
     },
     "suggest": {
         "ext-xml": "Use DOMDocument to process HTML documents",
         "ext-tidy": "Use tidy to process HTML documents"
     },
     "require-dev": {
-        "cambis/silverstripe-rector": "^0.5.1",
+        "cambis/silverstripe-rector": "^1",
         "phpunit/phpunit": "^9.5",
-        "syntro/silverstripe-phpstan": "^1",
-        "nswdpc/ci-files": "dev-v-1"
+        "cambis/silverstan": "^1",
+        "nswdpc/ci-files": "dev-v-3"
     },
     "repositories": [
         {
