@@ -351,7 +351,8 @@ class StructuredEmailProcessor extends ViewableData
             $emailMessage = Schema::emailMessage();
 
             // about
-            if (($subject = $this->email->getSubject()) !== null && ($subject = $this->email->getSubject()) !== '') {
+            $subject = $this->email->getSubject();
+            if (is_string($subject) && $subject !== '') {
                 $emailMessage->about(Schema::thing()->name($subject));
             }
 
