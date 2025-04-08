@@ -194,6 +194,8 @@ class StructuredEmailProcessor extends ViewableData
             Requirements::restore();
         }
 
+        return $this;
+
     }
 
     /**
