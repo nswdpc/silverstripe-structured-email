@@ -51,6 +51,7 @@
         -premailer-width: 570px;
         -premailer-cellpadding: 0;
         -premailer-cellspacing: 0;
+        background-color: {$BackgroundColor};
     }
 
     .email-footer {
