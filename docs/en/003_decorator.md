@@ -64,8 +64,10 @@ In the default decorator, the values used are:
 | Color   | The text colour of `<p>` elements       | '#51545E'|
 | SubColor   | The text colour of `<p class="sub">` elements       | '#6B6E76' |
 | HeadingColor   | The colour of h1-h3 elements       | '#333333' |
-| PrimaryColor   | The text colour of `.email-body a` elements, the `background-color` of `.email-masthead` and the `background-color` of `.email-body .button` elements        | '#002664'|
-| PrimaryTextColor   | The text colour of `.email-masthead` text and links  and the `background-color` of text colour of `.email-body .button` elements        | '#ffffff'|
+| PrimaryColor   | The text colour of `.email-body a` link elements, the `background-color` of `.email-masthead`      | '#002664'|
+| PrimaryTextColor   | The text colour of `.email-masthead` text and links | '#ffffff'
+| PrimaryButtonColor | The `background-color` of `.email-body .button` elements  |  '#002664'|
+| PrimaryButtonTextColor | The text colour of `.email-body .button` elements  |  '#ffffff'|
 | HighlightColor   | (unused)       | '#d7153a'|
 | SecondaryColor   | (unused)       | '#2e5299'|
 | DarkModeBackgroundColor   | Background colour of email when email is rendered in darkmode     | '#121212'|
