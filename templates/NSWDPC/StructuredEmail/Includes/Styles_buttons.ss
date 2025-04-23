@@ -1,12 +1,12 @@
 /* Buttons ------------------------------ */
 
 .email-body .button {
-    background-color: {$PrimaryColor} !important;
+    background-color: {$PrimaryButtonColor} !important;
     border-width: 14px 28px;
-    border-color: {$PrimaryColor} !important;
+    border-color: {$PrimaryButtonColor} !important;
     border-style: solid;
     display: inline-block;
-    color: {$PrimaryTextColor} !important;
+    color: {$PrimaryButtonTextColor} !important;
     text-decoration: none;
     border-radius: 4px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);

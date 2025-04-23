@@ -27,6 +27,8 @@ class Decorator extends AbstractDecorator
         'HeadingColor' => '#333333',
         'PrimaryColor' => '#002664',
         'PrimaryTextColor' => '#ffffff',
+        'PrimaryButtonColor' => '#002664',
+        'PrimaryButtonTextColor' => '#ffffff',
         'HighlightColor' => '#d7153a',
         'SecondaryColor' => '#2e5299',
         'DarkModeBackgroundColor' => '#121212',

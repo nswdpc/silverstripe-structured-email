@@ -53,6 +53,28 @@ SilverStripe\Core\Injector\Injector:
     class: Some\Project\MyDecorator
 ```
 
+In the default decorator, the values used are:
+
+| Name      | Description | Default |
+| ----------- | ----------- | ----- |
+| FontFamily      | The default font family | "-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif" |
+| FontSize   | The default font size        | '16px' |
+| BodyBackgroundColor   | The `bgcolor` attribute value applied to the `<body>` tag and as the `background-color` of the `email-wrapper` element        | '#F2F4F6' |
+| BackgroundColor   | The `background-color` applied to the `email-body_inner` element       | '#FFFFFF' |
+| Color   | The text colour of `<p>` elements       | '#51545E'|
+| SubColor   | The text colour of `<p class="sub">` elements       | '#6B6E76' |
+| HeadingColor   | The colour of h1-h3 elements       | '#333333' |
+| PrimaryColor   | The text colour of `.email-body a` link elements, the `background-color` of `.email-masthead`      | '#002664'|
+| PrimaryTextColor   | The text colour of `.email-masthead` text and links | '#ffffff'
+| PrimaryButtonColor | The `background-color` of `.email-body .button` elements  |  '#002664'|
+| PrimaryButtonTextColor | The text colour of `.email-body .button` elements  |  '#ffffff'|
+| HighlightColor   | (unused)       | '#d7153a'|
+| SecondaryColor   | (unused)       | '#2e5299'|
+| DarkModeBackgroundColor   | Background colour of email when email is rendered in darkmode     | '#121212'|
+| DarkModeBackgroundSubColor   | Background colour of `.email-masthead` when email is rendered in darkmode      | '#333333'|
+| DarkModeColor   | Text colour when email is rendered in darkmode     | '#ffffff'|
+| DarkModeButtonColor   | Background colour of `.email-body .button` when email is rendered in darkmode     | '#002664'|
+
 ### Set the layout type
 
 A layout type allows you some control over the HTML width ([more](https://github.com/ActiveCampaign/mailmason/wiki/Project-Structure#layouts))
