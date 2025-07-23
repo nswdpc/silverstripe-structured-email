@@ -223,7 +223,7 @@ class StructuredEmailProcessor extends ViewableData
                 return $html;
             }
 
-            $cleaner = $this->email->config()->get('html_cleaner');
+            $cleaner = $this->config()->get('html_cleaner');
 
             if ($cleaner == self::HTML_CLEANER_DOMDOCUMENT) {
                 if (class_exists('DOMDocument')) {
