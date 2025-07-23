@@ -38,10 +38,14 @@
         "ext-tidy": "Use tidy to process HTML documents"
     },
     "require-dev": {
-        "cambis/silverstripe-rector": "^1",
+        "cambis/silverstripe-rector": "^2",
         "phpunit/phpunit": "^9.5",
-        "cambis/silverstan": "^1",
-        "nswdpc/ci-files": "dev-v-3"
+        "cambis/silverstan": "^2",
+        "nswdpc/ci-files": "dev-v-4",
+        "phpstan/phpstan": "^2",
+        "rector/rector": "^2",
+        "phpstan/phpstan-phpunit": "^2",
+        "friendsofphp/php-cs-fixer": "^3"
     },
     "repositories": [
         {
