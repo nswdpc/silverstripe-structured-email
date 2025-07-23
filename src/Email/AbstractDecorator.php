@@ -6,7 +6,6 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ResourceURLGenerator;
 use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\ORM\FieldType\DBHTMLFragment;
 use SilverStripe\SiteConfig\SiteConfig;
 use SilverStripe\View\ViewableData;
 

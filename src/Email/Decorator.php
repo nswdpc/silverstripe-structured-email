@@ -4,7 +4,6 @@ namespace NSWDPC\StructuredEmail;
 
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\View\ViewableData;
 
 /**
  * Standard decorator for inlining styles into emails
