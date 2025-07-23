@@ -12,7 +12,6 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\ViewableData;
 use Spatie\SchemaOrg\Schema;
 use Spatie\SchemaOrg\Action;
 use Spatie\SchemaOrg\Contracts\ActionContract;

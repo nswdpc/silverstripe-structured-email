@@ -7,7 +7,6 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ResourceURLGenerator;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\View\ViewableData;
 
 abstract class AbstractDecorator extends \SilverStripe\Model\ModelData
 {
