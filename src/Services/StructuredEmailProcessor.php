@@ -18,13 +18,12 @@ use Spatie\SchemaOrg\Action;
 use Spatie\SchemaOrg\Contracts\ActionContract;
 
 /**
- * Trait a {@link \SilverStripe\Control\Email\Email} subclass can use
- * to provide processing via Structured Emails
+ * Process all emails via a single template
  *
  * @author James
  *
  */
-class StructuredEmailProcessor extends ViewableData
+class StructuredEmailProcessor extends \SilverStripe\Model\ModelData
 {
     use Injectable;
 
@@ -78,6 +77,7 @@ class StructuredEmailProcessor extends ViewableData
     /**
      * This class representation in a template is an empty string
      */
+    #[\Override]
     public function forTemplate(): string
     {
         return '';
@@ -343,7 +343,7 @@ class StructuredEmailProcessor extends ViewableData
      * Return the Schema.org script for this message
      * @return DBHTMLText|false
      */
-    public function getEmailSchema()
+    public function getEmailSchema(): \SilverStripe\ORM\FieldType\DBField|false
     {
         try {
 
