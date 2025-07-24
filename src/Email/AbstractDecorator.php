@@ -7,9 +7,8 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ResourceURLGenerator;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\SiteConfig\SiteConfig;
-use SilverStripe\View\ViewableData;
 
-abstract class AbstractDecorator extends ViewableData
+abstract class AbstractDecorator extends \SilverStripe\Model\ModelData
 {
     public const LAYOUT_TYPE_BASIC = 'basic';
 
@@ -59,7 +58,7 @@ abstract class AbstractDecorator extends ViewableData
      * @inheritdoc
      */
     #[\Override]
-    public function getField($field)
+    public function getField(string $field): mixed
     {
         return $this->getDecoration($field);
     }
@@ -68,7 +67,7 @@ abstract class AbstractDecorator extends ViewableData
      * @inheritdoc
      */
     #[\Override]
-    public function hasField($field)
+    public function hasField(string $field): bool
     {
         $this->getDecorations();
         return isset($this->_cache_decorations[ $field ]);
@@ -93,6 +92,7 @@ abstract class AbstractDecorator extends ViewableData
     /**
      * Return the decorator as CSS for inlining in a template
      */
+    #[\Override]
     public function forTemplate(): string
     {
         $decorations = $this->config()->get('decorations');

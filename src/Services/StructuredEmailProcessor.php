@@ -12,19 +12,17 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\ViewableData;
 use Spatie\SchemaOrg\Schema;
 use Spatie\SchemaOrg\Action;
 use Spatie\SchemaOrg\Contracts\ActionContract;
 
 /**
- * Trait a {@link \SilverStripe\Control\Email\Email} subclass can use
- * to provide processing via Structured Emails
+ * Process all emails via a single template
  *
  * @author James
  *
  */
-class StructuredEmailProcessor extends ViewableData
+class StructuredEmailProcessor extends \SilverStripe\Model\ModelData
 {
     use Injectable;
 
@@ -78,6 +76,7 @@ class StructuredEmailProcessor extends ViewableData
     /**
      * This class representation in a template is an empty string
      */
+    #[\Override]
     public function forTemplate(): string
     {
         return '';
@@ -295,10 +294,10 @@ class StructuredEmailProcessor extends ViewableData
      * @see https://postmarkapp.com/support/article/1220-adding-preheader-text-to-your-messages
      * @return void
      */
-    protected function applyPreheader(string $template)
+    protected function applyPreheader(string|array $template)
     {
         $preHeader = $this->getPreheader();
-        if ($preHeader !== '') {
+        if (is_string($template) && $preHeader !== '') {
             switch ($template) {
                 case 'SilverStripe/Control/Email/ForgotPasswordEmail':
                     $this->setPreHeader(
@@ -343,7 +342,7 @@ class StructuredEmailProcessor extends ViewableData
      * Return the Schema.org script for this message
      * @return DBHTMLText|false
      */
-    public function getEmailSchema()
+    public function getEmailSchema(): \SilverStripe\ORM\FieldType\DBField|false
     {
         try {
 
