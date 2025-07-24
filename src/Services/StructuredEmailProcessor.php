@@ -294,10 +294,10 @@ class StructuredEmailProcessor extends \SilverStripe\Model\ModelData
      * @see https://postmarkapp.com/support/article/1220-adding-preheader-text-to-your-messages
      * @return void
      */
-    protected function applyPreheader(string $template)
+    protected function applyPreheader(string|array $template)
     {
         $preHeader = $this->getPreheader();
-        if ($preHeader !== '') {
+        if (is_string($template) && $preHeader !== '') {
             switch ($template) {
                 case 'SilverStripe/Control/Email/ForgotPasswordEmail':
                     $this->setPreHeader(
