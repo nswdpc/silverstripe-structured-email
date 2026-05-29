@@ -31,7 +31,7 @@
     "require": {
         "silverstripe/framework": "^5",
         "league/html-to-markdown": "^5",
-        "spatie/schema-org": "^3.5"
+        "spatie/schema-org": "^4.0.2"
     },
     "suggest": {
         "ext-xml": "Use DOMDocument to process HTML documents",
