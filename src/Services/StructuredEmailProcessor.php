@@ -256,7 +256,8 @@ class StructuredEmailProcessor extends \SilverStripe\Model\ModelData
                     $html = $tidy->repairString(
                         $html,
                         [
-                            'indent' =>  true,
+                            'indent' => false,
+                            'wrap' => 0,
                             'indent-spaces' => 4,
                             'output-html' => true,
                             'merge-divs' => false,
